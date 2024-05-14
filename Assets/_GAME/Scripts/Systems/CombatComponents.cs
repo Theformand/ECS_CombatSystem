@@ -117,6 +117,28 @@ public struct BeamSkillData : IComponentData
     public int DamageCurrent;
 }
 
+[Serializable]
+public struct GrenadeSkillData : IComponentData
+{
+    public Entity GrenadePrefab;
+    public int DamageAtCenter;
+    public float LifeTime;
+    public float ExplosionRadius;
+    public float ThrowForce;
+    public float ThrowUpForce;
+    public DamageType DamageType;
+}
+
+
+public struct GrenadeData : IComponentData
+{
+    public float LifeTime;
+    public float ExplosionRadius;
+    public int DamageAtCenter;
+    public DamageType DamageType;
+
+}
+
 
 [Serializable]
 public struct Player : IComponentData

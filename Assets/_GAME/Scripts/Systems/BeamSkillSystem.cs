@@ -4,7 +4,7 @@ using Unity.Entities;
 using Unity.Mathematics;
 using Unity.Physics;
 using Unity.Transforms;
-using UnityEngine;
+using Debug = UnityEngine.Debug;
 
 [UpdateInGroup(typeof(SkillSystemGroup))]
 public partial struct BeamSkillSystem : ISystem
@@ -35,8 +35,13 @@ public partial struct BeamSkillSystem : ISystem
         var physics = SystemAPI.GetSingleton<PhysicsWorldSingleton>().PhysicsWorld;
         var ecb = new EntityCommandBuffer(Allocator.Temp);
 
-
-        NativeList<Unity.Physics.RaycastHit> hits = new NativeList<Unity.Physics.RaycastHit>(Allocator.Temp);
+        var filter = new CollisionFilter()
+        {
+            CollidesWith = 1u << 1, //Enemy layer
+            BelongsTo = ~0u,
+            GroupIndex = 0
+        };
+        NativeList<RaycastHit> hits = new(Allocator.Temp);
 
         enemyLUT.Update(ref state);
         foreach (var (rl, qb) in SystemAPI.Query<RefRW<SkillReloadData>, RefRW<BeamSkillData>>())
@@ -68,12 +73,7 @@ public partial struct BeamSkillSystem : ISystem
 
                 if (beamData.TimeStampNextTick < time)
                 {
-                    var filter = new CollisionFilter()
-                    {
-                        CollidesWith = 1u << 1, //Player layer
-                        BelongsTo = ~0u,
-                        GroupIndex = 0
-                    };
+                  
 
                     var raycastInput = new RaycastInput()
                     {
@@ -97,7 +97,7 @@ public partial struct BeamSkillSystem : ISystem
                             }
                         }
                     }
-                    // Reset tick on the last beam
+                    // Reset dmg tick on the last beam
                     if (i == beamData.BeamCountCurrent - 1)
                         beamDataW.TimeStampNextTick = time + (1f / beamData.TicksPerSecond);
                 }
@@ -120,11 +120,5 @@ public partial struct BeamSkillSystem : ISystem
         }
         ecb.Playback(state.EntityManager);
         hits.Dispose();
-    }
-
-
-    public void DrawGizmos()
-    {
-        Gizmos.DrawLine(float3.zero, float3.zero);
     }
 }

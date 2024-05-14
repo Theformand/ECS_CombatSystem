@@ -92,6 +92,44 @@ public partial struct SkillReloadSystem : ISystem
         }
     }
 }
+ 
+
+[BurstCompile]
+public class Utils
+{
+    [BurstCompile]
+    public static int GetIndexOfClosestWithLOS(ref NativeArray<LocalTransform> transforms, ref float3 referencePoint, float rangeSqr, ref PhysicsWorld physicsWorld)
+    {
+        float closestDist = 100000f;
+        int idxClosest = -1;
+        var filter = new CollisionFilter()
+        {
+            CollidesWith = 1u << 2, //Environment layer
+            BelongsTo = 1u << 2, //Environment layer - should probably just be ~0u
+            GroupIndex = 0
+        };
+        float3 up = new(0f, 1f, 0f);
+
+        for (int i = 0; i < transforms.Length; i++)
+        {
+            var pos = transforms[i].Position;
+            var raycastInput = new RaycastInput()
+            {
+                Start = referencePoint + up,
+                End = pos + up,
+                Filter = filter
+            };
+
+            var distSqr = math.distancesq(referencePoint, pos);
+            if (distSqr < rangeSqr && distSqr < closestDist && !physicsWorld.CastRay(raycastInput))
+            {
+                closestDist = distSqr;
+                idxClosest = i;
+            }
+        }
+        return idxClosest;
+    }
+}
 
 
 [UpdateInGroup(typeof(SkillSystemGroup))]

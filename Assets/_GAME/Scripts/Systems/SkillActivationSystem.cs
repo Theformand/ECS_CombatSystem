@@ -54,11 +54,11 @@ public partial struct SkillActivationSystem : ISystem
             // Aqcuire target based on the targeting mode of the skill
             if (activationData.TargetingMode == SkillTargetingMode.CLOSEST)
             {
-                int idxTarget = GetIndexOfClosestWithLOS(allTransforms, playerPos, activationData.ActivationRangeSqr, physicsWorld);
+                int idxTarget = Utils.GetIndexOfClosestWithLOS(ref allTransforms, ref playerPos, activationData.ActivationRangeSqr, ref physicsWorld);
                 if (idxTarget == -1)
                     continue;
 
-                target = allTransforms[idxTarget];
+                target = allTransforms[idxTarget]; 
                 targetFound = true;
 
             }
@@ -83,8 +83,8 @@ public partial struct SkillActivationSystem : ISystem
                     if (allEnemies[i].HPMax == highestMax)
                         maxHPTransforms.Add(allTransforms[i]);
                 }
-
-                int idxTarget = GetIndexOfClosestWithLOS(maxHPTransforms.AsArray(), playerPos, activationData.ActivationRangeSqr, physicsWorld);
+                var tArray = maxHPTransforms.AsArray();
+                int idxTarget = Utils.GetIndexOfClosestWithLOS(ref tArray, ref playerPos, activationData.ActivationRangeSqr, ref physicsWorld);
                 if (idxTarget == -1)
                     continue;
 

@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-[RequireComponent(typeof(SkillReloadTimeAuth), typeof(SkillReloadTimeAuth), typeof(SkillShootAuth))]
+[RequireComponent(typeof(SkillReloadTimeAuth), typeof(SkillShootAuth), typeof(SkillActivationAuth))]
 public class SkillAuth : MonoBehaviour
 {
 

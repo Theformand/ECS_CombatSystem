@@ -92,13 +92,16 @@ public partial struct SkillReloadSystem : ISystem
         }
     }
 }
- 
+
 
 [BurstCompile]
 public class Utils
 {
     [BurstCompile]
-    public static int GetIndexOfClosestWithLOS(ref NativeArray<LocalTransform> transforms, ref float3 referencePoint, float rangeSqr, ref PhysicsWorld physicsWorld)
+    public static int GetIndexOfClosestWithLOS(ref NativeArray<LocalTransform> transforms,
+                                               ref float3 referencePoint,
+                                               float rangeSqr,
+                                               ref PhysicsWorld physicsWorld)
     {
         float closestDist = 100000f;
         int idxClosest = -1;
@@ -137,7 +140,7 @@ public partial struct DamageOnTriggerSystem : ISystem
 {
     private BufferLookup<DamageBufferElement> dmgBufferLookup;
 
-    public void OnCreate(ref SystemState state) 
+    public void OnCreate(ref SystemState state)
     {
         dmgBufferLookup = SystemAPI.GetBufferLookup<DamageBufferElement>();
     }

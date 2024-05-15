@@ -63,9 +63,7 @@ public struct SkillReloadData : IComponentData
     public float Time;
     public int MagCountBase;
 
-    [HideInInspector]
     public int MagCountCurrent;
-    [HideInInspector]
     public float TimeCurrent;
 }
 
@@ -73,7 +71,6 @@ public struct SkillReloadData : IComponentData
 public struct SkillActivationData : IComponentData
 {
     public float ActivationRange;
-    [HideInInspector]
     public float ActivationRangeSqr;
     public bool RequireLOS;
     public SkillTargetingMode TargetingMode;
@@ -127,15 +124,17 @@ public struct GrenadeSkillData : IComponentData
     public float ThrowForce;
     public float ThrowUpForce;
     public DamageType DamageType;
+    public int NumGrenades;
 }
 
-
+[Serializable]
 public struct GrenadeData : IComponentData
 {
-    public float LifeTime;
-    public float ExplosionRadius;
-    public int DamageAtCenter;
-    public DamageType DamageType;
+    [HideInInspector] public float LifeTime;
+    [HideInInspector] public float ExplosionRadius;
+    [HideInInspector] public int DamageAtCenter;
+    [HideInInspector] public DamageType DamageType;
+    [HideInInspector] public float UniformScale;
 
 }
 

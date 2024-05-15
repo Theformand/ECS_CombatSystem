@@ -4,15 +4,18 @@ using Unity.Transforms;
 using Unity.Physics;
 using Unity.Collections;
 using Unity.Mathematics;
+using UnityEngine;
 
 public partial struct GrenadeSkillSystem : ISystem
 {
     private EntityQuery entityQuery;
     private float3 playerPos;
+    private float3 up;
 
     public void OnCreate(ref SystemState state)
     {
         entityQuery = state.GetEntityQuery(typeof(EnemyTag), typeof(LocalTransform));
+        up = new float3(0f, 1f, 0f);
 
     }
     public void OnDestroy(ref SystemState state) { }
@@ -23,7 +26,6 @@ public partial struct GrenadeSkillSystem : ISystem
         var ecb = new EntityCommandBuffer(Allocator.Temp);
         var physicsWorld = SystemAPI.GetSingleton<PhysicsWorldSingleton>().PhysicsWorld;
         NativeArray<LocalTransform> allTransforms = entityQuery.ToComponentDataArray<LocalTransform>(Allocator.Temp);
-        NativeArray<EnemyTag> allEnemies = entityQuery.ToComponentDataArray<EnemyTag>(Allocator.Temp);
 
         foreach (var (_, transform) in SystemAPI.Query<Player, LocalTransform>())
         {
@@ -38,6 +40,10 @@ public partial struct GrenadeSkillSystem : ISystem
             ref var activationW = ref ac.ValueRW;
             LocalTransform target = LocalTransform.Identity;
             bool targetFound = false;
+
+            if (reload.TimeCurrent > 0f || reload.MagCountCurrent <=0)
+                continue;
+            
             if (activation.TargetingMode == SkillTargetingMode.CLOSEST)
             {
                 int idxTarget = Utils.GetIndexOfClosestWithLOS(ref allTransforms, ref playerPos, activation.ActivationRangeSqr, ref physicsWorld);
@@ -47,7 +53,6 @@ public partial struct GrenadeSkillSystem : ISystem
                 target = allTransforms[idxTarget];
                 targetFound = true;
             }
-
             if (targetFound)
             {
                 var dir = math.normalizesafe(target.Position - playerPos);
@@ -55,6 +60,7 @@ public partial struct GrenadeSkillSystem : ISystem
                 dir.x *= skillData.ThrowForce;
                 dir.y *= skillData.ThrowUpForce;
                 dir.z *= skillData.ThrowForce;
+                ecb.SetComponent(grenade, LocalTransform.FromPositionRotationScale(playerPos + up, quaternion.identity, 0.35f));
                 ecb.SetComponent(grenade, new PhysicsVelocity { Linear = dir });
                 ecb.SetComponent(grenade, new GrenadeData
                 {
@@ -62,9 +68,15 @@ public partial struct GrenadeSkillSystem : ISystem
                     ExplosionRadius = skillData.ExplosionRadius,
                     LifeTime = skillData.LifeTime
                 });
+                reloadW.MagCountCurrent--;
+                if (reloadW.MagCountCurrent <= 0)
+                    reloadW.TimeCurrent = reload.Time;
             }
         }
+        ecb.Playback(state.EntityManager);
+        allTransforms.Dispose();
     }
+    
 }
 
 public partial struct GrenadeLifeTimeSystem : ISystem
@@ -74,7 +86,7 @@ public partial struct GrenadeLifeTimeSystem : ISystem
 
     public void OnCreate(ref SystemState state)
     {
-        enemyLUT = new ComponentLookup<EnemyTag>();
+        enemyLUT = SystemAPI.GetComponentLookup<EnemyTag>();
         filter = new CollisionFilter()
         {
             BelongsTo = ~0u,

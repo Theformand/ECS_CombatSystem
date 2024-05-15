@@ -8,10 +8,9 @@ using Unity.Transforms;
 using UnityEngine;
 
 [UpdateInGroup(typeof(SkillSystemGroup))]
-public partial struct SkillActivationSystem : ISystem
+public partial struct ProjectileSkillSystem : ISystem
 {
     private EntityQuery entityQuery;
-    private NativeArray<LocalTransform> allTransforms;
 
     public void OnCreate(ref SystemState state)
     {

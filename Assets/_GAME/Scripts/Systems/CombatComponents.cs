@@ -83,6 +83,7 @@ public struct BulletSkillShotData : IComponentData
     public int NumBulletsPerAttack;
     public float AttacksPerSecond;
     public float AngleSpread;
+    public float AccuracySpread;
     public float BulletMoveSpeed;
     public int Damage;
     public int Pierce;

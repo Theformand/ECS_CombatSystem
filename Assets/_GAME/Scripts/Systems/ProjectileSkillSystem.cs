@@ -1,21 +1,22 @@
-﻿using System.Diagnostics;
-using Unity.Burst;
+﻿using Unity.Burst;
 using Unity.Collections;
 using Unity.Entities;
 using Unity.Mathematics;
 using Unity.Physics;
 using Unity.Transforms;
-using UnityEngine;
 
 [UpdateInGroup(typeof(SkillSystemGroup))]
 public partial struct ProjectileSkillSystem : ISystem
 {
     private EntityQuery entityQuery;
+    private Random rng;
 
     public void OnCreate(ref SystemState state)
     {
         state.RequireForUpdate<Player>();
         entityQuery = state.GetEntityQuery(typeof(EnemyTag), typeof(LocalTransform));
+        rng = new Random();
+        rng.InitState();
     }
 
     public void OnDestroy(ref SystemState state)
@@ -111,7 +112,8 @@ public partial struct ProjectileSkillSystem : ISystem
                     {
                         float startingAngle = (shotData.NumBulletsPerAttack - 1) * (shotData.AngleSpread * 0.5f);
                         float angle = -startingAngle + (i * shotData.AngleSpread);
-                        var rotOffset = quaternion.AxisAngle(up, math.radians(angle));
+                        float spread = rng.NextFloat(-shotData.AccuracySpread, shotData.AccuracySpread);
+                        var rotOffset = quaternion.AxisAngle(up, math.radians(angle + spread));
                         dir = math.mul(rotOffset, aimDir);
                     }
 

@@ -29,7 +29,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 1.628179, y: -0.8925071, z: -3.1610212}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 50, y: 50, z: 50}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
@@ -46,14 +46,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a50a16f5f6d0beb4492e98b4b85a9d2d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  InfoArray:
-    ComponentArray:
-    - AuthoringData:
-        Time: 3
-        MagCountBase: 3
-        MagCountCurrent: 0
-        TimeCurrent: 0
-      References: []
+  Time: 2
+  MagCountBase: 1
 --- !u!114 &7587892255505647780
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -66,7 +60,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e024b52f91cbbaa4eab20a09c77a9757, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ActivationRange: 10
+  ActivationRange: 14.22
   RequiresLOS: 0
   TargetingMode: 0
 --- !u!114 &834251835798973455
@@ -81,14 +75,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 28561a693cb14384cab6c62c5712f369, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  InfoArray:
-    ComponentArray:
-    - AuthoringData:
-        DamageAtCenter: 30
-        LifeTime: 1
-        ExplosionRadius: 4
-        ThrowForce: 4
-        ThrowUpForce: 2
-        DamageType: 4
-      References:
-      - {fileID: 2177206876486781528, guid: cfdc03f941c919447a5a858cf6bca564, type: 3}
+  GrenadePrefab: {fileID: 2177206876486781528, guid: cfdc03f941c919447a5a858cf6bca564, type: 3}
+  GrenadeSettings:
+    LifeTime: 1
+    ExplosionRadius: 20
+    DamageAtCenter: 20
+    DamageType: 0
+    ExplosionType: 0
+    Cluster: 1
+    NumClusterGrenades: 3
+    ThrowForce: 8
+    ThrowUpForce: 288

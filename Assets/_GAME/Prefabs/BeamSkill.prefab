@@ -45,7 +45,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3b8d2b4e40a93e24fbb533519fd071fe, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Damage: 0
+  Damage: 7
   DamageType: 0
   BeamLengthBase: 10
   TicksPerSecond: 3.57
@@ -64,11 +64,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a50a16f5f6d0beb4492e98b4b85a9d2d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  InfoArray:
-    ComponentArray:
-    - AuthoringData:
-        Time: 1
-        MagCountBase: 1
-        MagCountCurrent: 1
-        TimeCurrent: 0
-      References: []
+  Time: 5
+  MagCountBase: 1

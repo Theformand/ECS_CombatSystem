@@ -54,6 +54,7 @@ public struct EnemyTag : IComponentData
 {
     public int HPMax;
     public int HPCurrent;
+    public int PierceCost;
 }
 
 
@@ -118,24 +119,49 @@ public struct BeamSkillData : IComponentData
 public struct GrenadeSkillData : IComponentData
 {
     public Entity GrenadePrefab;
-    public int DamageAtCenter;
+    public GrenadeSettings GrenadeSettings;
+    public Entity ClusterGrenade;
+}
+
+
+//shoot this struct out of ECS land every time state changes, so the UI can update?
+public struct WeaponUIData
+{
+    public int AmmoMax;
+    public int AmmoCurrent;
+    public float ReloadDuration;
+    public float ReloadTime;
+}
+
+public struct SpawnClusterGrenades : IComponentData
+{
+    public float3 Position;
+    public float LifeTime;
+    public Entity GrenadePrefab;
+    public GrenadeSettings GrenadeSettings;
+}
+
+[Serializable]
+public struct GrenadeSettings
+{
     public float LifeTime;
     public float ExplosionRadius;
+    public int DamageAtCenter;
+    public DamageType DamageType;
+    public GrenadeExplosionType ExplosionType;
+    public bool Cluster;
+    public int NumClusterGrenades;
     public float ThrowForce;
     public float ThrowUpForce;
-    public DamageType DamageType;
-    public int NumGrenades;
 }
 
 [Serializable]
 public struct GrenadeData : IComponentData
 {
-    [HideInInspector] public float LifeTime;
-    [HideInInspector] public float ExplosionRadius;
-    [HideInInspector] public int DamageAtCenter;
-    [HideInInspector] public DamageType DamageType;
-    [HideInInspector] public float UniformScale;
-
+    public GrenadeSettings GrenadeSettings;
+    public float LifeTime;
+    public bool Cluster;
+    [HideInInspector] public Entity ClusterGrenade;
 }
 
 
@@ -170,10 +196,17 @@ public enum DamageType
     FIRE,
     COLD,
     ACID,
-    EXPLOSIVE,
+}
+
+public enum GrenadeExplosionType
+{
+    Explosion,
+    Bounce,
+    SpinningBullets,
+    BulletBloom,
 }
 
 [UpdateInGroup(typeof(SimulationSystemGroup))]
 [UpdateAfter(typeof(FixedStepSimulationSystemGroup))]
-[UpdateAfter(typeof(TransformSystemGroup))]
+[UpdateBefore(typeof(TransformSystemGroup))]
 public partial class SkillSystemGroup : ComponentSystemGroup { }

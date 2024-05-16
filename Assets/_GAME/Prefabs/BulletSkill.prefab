@@ -59,14 +59,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a50a16f5f6d0beb4492e98b4b85a9d2d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  InfoArray:
-    ComponentArray:
-    - AuthoringData:
-        Time: 5.96
-        MagCountBase: 2
-        MagCountCurrent: 0
-        TimeCurrent: 0
-      References: []
+  Time: 2
+  MagCountBase: 2
 --- !u!114 &1531053811975876321
 MonoBehaviour:
   m_ObjectHideFlags: 0

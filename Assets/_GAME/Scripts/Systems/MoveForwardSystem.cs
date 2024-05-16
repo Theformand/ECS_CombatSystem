@@ -132,6 +132,14 @@ public class Utils
         }
         return idxClosest;
     }
+
+    [BurstCompile] 
+    public static void HandleReload(ref SkillReloadData reload, int ammoConsumed = 1)
+    {
+        reload.MagCountCurrent -= ammoConsumed;
+        if (reload.MagCountCurrent <= 0)
+            reload.TimeCurrent = reload.Time;
+    }
 }
 
 

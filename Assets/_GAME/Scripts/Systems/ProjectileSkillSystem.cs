@@ -41,6 +41,7 @@ public partial struct ProjectileSkillSystem : ISystem
         {
             ref readonly var shotData = ref qshotData.ValueRO;
             ref var shotDataW = ref qshotData.ValueRW;
+            ref var reloadW = ref reload.ValueRW;
 
             var isReloaded = reload.ValueRO.TimeCurrent <= 0f;
             bool canShoot = time > shotData.TimeStampNextShot  && reload.ValueRO.MagCountCurrent > 0;
@@ -128,11 +129,7 @@ public partial struct ProjectileSkillSystem : ISystem
 
                 }
                 shotDataW.TimeStampNextShot = time + 1f / shotData.AttacksPerSecond;
-                reload.ValueRW.MagCountCurrent--;
-                if (reload.ValueRO.MagCountCurrent == 0)
-                {
-                    reload.ValueRW.TimeCurrent = reload.ValueRO.Time;
-                }
+                Utils.HandleReload(ref reloadW);
             }
         }
 

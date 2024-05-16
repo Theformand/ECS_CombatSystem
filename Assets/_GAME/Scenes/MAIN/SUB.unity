@@ -119,7 +119,7 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
---- !u!1001 &183535715
+--- !u!1001 &80048690
 PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
@@ -128,32 +128,16 @@ PrefabInstance:
     m_TransformParent: {fileID: 0}
     m_Modifications:
     - target: {fileID: 834251835798973455, guid: 10c4f7de54455934aa4965364a657c4b, type: 3}
-      propertyPath: InfoArray.ComponentArray.Array.data[0].AuthoringData.LifeTime
-      value: 2.17
-      objectReference: {fileID: 0}
-    - target: {fileID: 834251835798973455, guid: 10c4f7de54455934aa4965364a657c4b, type: 3}
-      propertyPath: InfoArray.ComponentArray.Array.data[0].AuthoringData.ThrowForce
-      value: 12
-      objectReference: {fileID: 0}
-    - target: {fileID: 834251835798973455, guid: 10c4f7de54455934aa4965364a657c4b, type: 3}
-      propertyPath: InfoArray.ComponentArray.Array.data[0].AuthoringData.NumGrenades
+      propertyPath: GrenadeSettings.Cluster
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 834251835798973455, guid: 10c4f7de54455934aa4965364a657c4b, type: 3}
-      propertyPath: InfoArray.ComponentArray.Array.data[0].AuthoringData.ThrowUpForce
-      value: 288
+      propertyPath: GrenadeSettings.LifeTime
+      value: 1.5
       objectReference: {fileID: 0}
     - target: {fileID: 2579175482711124226, guid: 10c4f7de54455934aa4965364a657c4b, type: 3}
       propertyPath: m_Name
       value: GrenadeSkill
-      objectReference: {fileID: 0}
-    - target: {fileID: 7587892255505647780, guid: 10c4f7de54455934aa4965364a657c4b, type: 3}
-      propertyPath: RequiresLOS
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 7587892255505647780, guid: 10c4f7de54455934aa4965364a657c4b, type: 3}
-      propertyPath: ActivationRange
-      value: 13.1
       objectReference: {fileID: 0}
     - target: {fileID: 8416678927261936499, guid: 10c4f7de54455934aa4965364a657c4b, type: 3}
       propertyPath: m_LocalPosition.x
@@ -194,18 +178,6 @@ PrefabInstance:
     - target: {fileID: 8416678927261936499, guid: 10c4f7de54455934aa4965364a657c4b, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8418802792304477097, guid: 10c4f7de54455934aa4965364a657c4b, type: 3}
-      propertyPath: Time
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 8418802792304477097, guid: 10c4f7de54455934aa4965364a657c4b, type: 3}
-      propertyPath: MagCountBase
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 8418802792304477097, guid: 10c4f7de54455934aa4965364a657c4b, type: 3}
-      propertyPath: InfoArray.ComponentArray.Array.data[0].AuthoringData.Time
-      value: 31.73
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -259,22 +231,6 @@ PrefabInstance:
     - target: {fileID: 1233951240929751519, guid: 6d1db71787e528447bd668c7ac492d96, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3852242956575557842, guid: 6d1db71787e528447bd668c7ac492d96, type: 3}
-      propertyPath: m_Capsule.Radius
-      value: 0.36
-      objectReference: {fileID: 0}
-    - target: {fileID: 3852242956575557842, guid: 6d1db71787e528447bd668c7ac492d96, type: 3}
-      propertyPath: m_Cylinder.Radius
-      value: 0.36
-      objectReference: {fileID: 0}
-    - target: {fileID: 3852242956575557842, guid: 6d1db71787e528447bd668c7ac492d96, type: 3}
-      propertyPath: m_PrimitiveSize.x
-      value: 0.72
-      objectReference: {fileID: 0}
-    - target: {fileID: 3852242956575557842, guid: 6d1db71787e528447bd668c7ac492d96, type: 3}
-      propertyPath: m_PrimitiveSize.y
-      value: 0.72
       objectReference: {fileID: 0}
     - target: {fileID: 9024142773675701311, guid: 6d1db71787e528447bd668c7ac492d96, type: 3}
       propertyPath: m_Name
@@ -970,5 +926,5 @@ SceneRoots:
   - {fileID: 1622915418}
   - {fileID: 2114730995}
   - {fileID: 1505452304}
+  - {fileID: 80048690}
   - {fileID: 607703341}
-  - {fileID: 183535715}

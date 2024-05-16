@@ -5,6 +5,7 @@ using Unity.Physics;
 using Unity.Collections;
 using Unity.Mathematics;
 using UnityEngine;
+using static UnityEngine.EventSystems.EventTrigger;
 
 public partial struct GrenadeSkillSystem : ISystem
 {
@@ -41,9 +42,9 @@ public partial struct GrenadeSkillSystem : ISystem
             LocalTransform target = LocalTransform.Identity;
             bool targetFound = false;
 
-            if (reload.TimeCurrent > 0f || reload.MagCountCurrent <=0)
+            if (reload.TimeCurrent > 0f || reload.MagCountCurrent <= 0)
                 continue;
-            
+
             if (activation.TargetingMode == SkillTargetingMode.CLOSEST)
             {
                 int idxTarget = Utils.GetIndexOfClosestWithLOS(ref allTransforms, ref playerPos, activation.ActivationRangeSqr, ref physicsWorld);
@@ -57,26 +58,26 @@ public partial struct GrenadeSkillSystem : ISystem
             {
                 var dir = math.normalizesafe(target.Position - playerPos);
                 var grenade = ecb.Instantiate(skillData.GrenadePrefab);
-                dir.x *= skillData.ThrowForce;
-                dir.y *= skillData.ThrowUpForce;
-                dir.z *= skillData.ThrowForce;
+                var settings = skillData.GrenadeSettings;
+                dir.x *= settings.ThrowForce;
+                dir.y *= settings.ThrowUpForce;
+                dir.z *= settings.ThrowForce;
                 ecb.SetComponent(grenade, LocalTransform.FromPositionRotationScale(playerPos + up, quaternion.identity, 0.35f));
                 ecb.SetComponent(grenade, new PhysicsVelocity { Linear = dir });
                 ecb.SetComponent(grenade, new GrenadeData
                 {
-                    DamageAtCenter = skillData.DamageAtCenter,
-                    ExplosionRadius = skillData.ExplosionRadius,
-                    LifeTime = skillData.LifeTime
+                    LifeTime = settings.LifeTime,
+                    GrenadeSettings = settings,
+                    Cluster = settings.Cluster,
+                    ClusterGrenade = skillData.ClusterGrenade,
                 });
-                reloadW.MagCountCurrent--;
-                if (reloadW.MagCountCurrent <= 0)
-                    reloadW.TimeCurrent = reload.Time;
+
+                Utils.HandleReload(ref reloadW);
             }
         }
         ecb.Playback(state.EntityManager);
         allTransforms.Dispose();
     }
-    
 }
 
 public partial struct GrenadeLifeTimeSystem : ISystem
@@ -105,31 +106,126 @@ public partial struct GrenadeLifeTimeSystem : ISystem
         var physics = SystemAPI.GetSingleton<PhysicsWorldSingleton>();
         enemyLUT.Update(ref state);
         var hits = new NativeList<DistanceHit>(32, Allocator.Temp);
-        foreach (var (grenade, transform, entity) in SystemAPI.Query<RefRW<GrenadeData>, LocalTransform>().WithEntityAccess())
+        foreach (var (qgrenade, transform, entity) in SystemAPI.Query<RefRW<GrenadeData>, LocalTransform>().WithEntityAccess())
         {
-            grenade.ValueRW.LifeTime -= dt;
+            ref readonly var grenade = ref qgrenade.ValueRO;
+            ref var grenadeW = ref qgrenade.ValueRW;
+            grenadeW.LifeTime -= dt;
 
-            if (grenade.ValueRO.LifeTime <= 0f)
+            //cluster
+            if (grenade.Cluster && transform.Position.y < .98f || grenade.LifeTime <= 0f)
             {
-                if(physics.OverlapSphere(transform.Position, grenade.ValueRO.ExplosionRadius, ref hits, filter))
+                var ent = ecb.CreateEntity();
+                ecb.AddComponent(ent, new SpawnClusterGrenades
                 {
-                    for (int i = 0; i < hits.Length; i++)
-                    {
-                        var ent = hits[i].Entity;
-                        if (enemyLUT.HasComponent(ent))
-                        {
-                            ecb.AddComponent(ent, new DamageData()
-                            {
-                                DamageType = grenade.ValueRO.DamageType,
-                                Damage = grenade.ValueRO.DamageAtCenter
-                            });
-                        }
-                    }
-                }
+                    GrenadeSettings = grenade.GrenadeSettings,
+                    GrenadePrefab = grenade.ClusterGrenade,
+                    Position = transform.Position,
+                    LifeTime = 0.75f
+                });
+
                 ecb.DestroyEntity(entity);
+                continue;
+            }
+
+            if (grenade.LifeTime <= 0f)
+            {
+                switch (grenade.GrenadeSettings.ExplosionType)
+                {
+                    case GrenadeExplosionType.Explosion:
+                        Explode(ref grenadeW, transform.Position, ref hits, ref filter, ref ecb, ref physics);
+                        ecb.DestroyEntity(entity);
+                        break;
+                    case GrenadeExplosionType.SpinningBullets:
+                        break;
+                    case GrenadeExplosionType.BulletBloom:
+                        ecb.DestroyEntity(entity);
+                        break;
+                    default:
+                        break;
+                }
+
             }
         }
         ecb.Playback(state.EntityManager);
         hits.Dispose();
+    }
+
+    public partial struct System : ISystem
+    {
+        private Unity.Mathematics.Random rng;
+
+        public void OnCreate(ref SystemState state)
+        {
+            rng = new Unity.Mathematics.Random();
+            rng.InitState();
+        }
+
+        public void OnDestroy(ref SystemState state) { }
+
+        [BurstCompile]
+        public void OnUpdate(ref SystemState state)
+        {
+            var ecb = new EntityCommandBuffer(Allocator.Temp);
+            foreach (var (qc, entity) in SystemAPI.Query<RefRW<SpawnClusterGrenades>>().WithEntityAccess())
+            {
+                ref readonly var cluster = ref qc.ValueRO;
+                var settings = cluster.GrenadeSettings;
+                for (int i = 0; i < settings.NumClusterGrenades; i++)
+                {
+                    settings.Cluster = false;
+                    var rads = math.radians(rng.NextFloat(0f, 360f));
+                    var dir = float3.zero;
+                    dir.x = math.cos(rads);
+                    dir.z = math.sin(rads);
+                    dir = math.normalize(dir);
+
+                    var grenade = ecb.Instantiate(cluster.GrenadePrefab);
+                    float scalar = 1f;
+                    dir.x *= settings.ThrowForce * scalar;
+                    dir.z *= settings.ThrowForce * scalar;
+                    dir.y *= settings.ThrowUpForce * scalar *2f;
+                    var newSettings = new GrenadeSettings()
+                    {
+                        Cluster = false,
+                        DamageAtCenter = settings.DamageAtCenter,
+                        DamageType = settings.DamageType,
+                        ExplosionRadius = settings.ExplosionRadius,
+                        ExplosionType = settings.ExplosionType,
+                        LifeTime = cluster.LifeTime
+                    };
+
+                    ecb.SetComponent(grenade, LocalTransform.FromPositionRotationScale(cluster.Position, quaternion.identity, 0.35f));
+                    ecb.SetComponent(grenade, new PhysicsVelocity { Linear = dir });
+                    ecb.SetComponent(grenade, new GrenadeData
+                    {
+                        GrenadeSettings = newSettings,
+                        LifeTime = cluster.LifeTime,
+                    });
+                }
+                ecb.DestroyEntity(entity);
+            }
+            ecb.Playback(state.EntityManager);
+        }
+    }
+
+    [BurstCompile]
+    private void Explode(ref GrenadeData grenade, float3 position, ref NativeList<DistanceHit> hits, ref CollisionFilter filter, ref EntityCommandBuffer ecb, ref PhysicsWorldSingleton physics)
+    {
+        if (physics.OverlapSphere(position, grenade.GrenadeSettings.ExplosionRadius, ref hits, filter))
+        {
+            for (int i = 0; i < hits.Length; i++)
+            {
+                var ent = hits[i].Entity;
+                if (enemyLUT.HasComponent(ent))
+                {
+                    ecb.AddComponent(ent, new DamageData()
+                    {
+                        DamageType = grenade.GrenadeSettings.DamageType,
+                        Damage = grenade.GrenadeSettings.DamageAtCenter
+                    });
+                }
+            }
+        }
     }
 }

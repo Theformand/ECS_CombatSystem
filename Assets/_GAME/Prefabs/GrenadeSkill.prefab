@@ -77,12 +77,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   GrenadePrefab: {fileID: 2177206876486781528, guid: cfdc03f941c919447a5a858cf6bca564, type: 3}
   GrenadeSettings:
-    LifeTime: 1
+    LifeTime: 1.5
     ExplosionRadius: 20
     DamageAtCenter: 20
     DamageType: 0
     ExplosionType: 0
     Cluster: 1
     NumClusterGrenades: 3
-    ThrowForce: 8
-    ThrowUpForce: 288
+    ThrowForce: 13.55
+    ThrowUpForce: 6.44

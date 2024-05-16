@@ -127,14 +127,6 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 834251835798973455, guid: 10c4f7de54455934aa4965364a657c4b, type: 3}
-      propertyPath: GrenadeSettings.Cluster
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 834251835798973455, guid: 10c4f7de54455934aa4965364a657c4b, type: 3}
-      propertyPath: GrenadeSettings.LifeTime
-      value: 1.5
-      objectReference: {fileID: 0}
     - target: {fileID: 2579175482711124226, guid: 10c4f7de54455934aa4965364a657c4b, type: 3}
       propertyPath: m_Name
       value: GrenadeSkill

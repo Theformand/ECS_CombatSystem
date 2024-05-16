@@ -57,10 +57,11 @@ public partial struct GrenadeSkillSystem : ISystem
             if (targetFound)
             {
                 var dir = math.normalizesafe(target.Position - playerPos);
+                dir.y = 0f;
                 var grenade = ecb.Instantiate(skillData.GrenadePrefab);
                 var settings = skillData.GrenadeSettings;
                 dir.x *= settings.ThrowForce;
-                dir.y *= settings.ThrowUpForce;
+                dir.y = settings.ThrowUpForce;
                 dir.z *= settings.ThrowForce;
                 ecb.SetComponent(grenade, LocalTransform.FromPositionRotationScale(playerPos + up, quaternion.identity, 0.35f));
                 ecb.SetComponent(grenade, new PhysicsVelocity { Linear = dir });
@@ -121,7 +122,7 @@ public partial struct GrenadeLifeTimeSystem : ISystem
                     GrenadeSettings = grenade.GrenadeSettings,
                     GrenadePrefab = grenade.ClusterGrenade,
                     Position = transform.Position,
-                    LifeTime = 0.75f
+                    LifeTime = grenade.LifeTime * 2f
                 });
 
                 ecb.DestroyEntity(entity);
@@ -171,20 +172,24 @@ public partial struct GrenadeLifeTimeSystem : ISystem
             {
                 ref readonly var cluster = ref qc.ValueRO;
                 var settings = cluster.GrenadeSettings;
+                var ang = 360f / settings.NumClusterGrenades;
+                var angRotation = rng.NextFloat(0,360f);
                 for (int i = 0; i < settings.NumClusterGrenades; i++)
                 {
                     settings.Cluster = false;
-                    var rads = math.radians(rng.NextFloat(0f, 360f));
+                    var rngOffset = rng.NextFloat(0f, 60f);
+                    
+                    var rads = math.radians((i * ang) + rngOffset + angRotation);
                     var dir = float3.zero;
                     dir.x = math.cos(rads);
                     dir.z = math.sin(rads);
                     dir = math.normalize(dir);
 
                     var grenade = ecb.Instantiate(cluster.GrenadePrefab);
-                    float scalar = 1f;
+                    float scalar = .6f;
                     dir.x *= settings.ThrowForce * scalar;
                     dir.z *= settings.ThrowForce * scalar;
-                    dir.y *= settings.ThrowUpForce * scalar *2f;
+                    dir.y *= settings.ThrowUpForce * scalar * 2f;
                     var newSettings = new GrenadeSettings()
                     {
                         Cluster = false,

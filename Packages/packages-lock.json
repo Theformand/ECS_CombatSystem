@@ -1,5 +1,12 @@
 {
   "dependencies": {
+    "com.commontools.coreutils": {
+      "version": "https://github.com/Theformand/CoreUtils.git",
+      "depth": 0,
+      "source": "git",
+      "dependencies": {},
+      "hash": "c89cf2afee2fd9997164267549bbff32db8eacaa"
+    },
     "com.unity.burst": {
       "version": "1.8.13",
       "depth": 1,

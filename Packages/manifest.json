@@ -1,5 +1,6 @@
 {
   "dependencies": {
+    "com.commontools.coreutils": "https://github.com/Theformand/CoreUtils.git",
     "com.unity.cinemachine": "3.1.0",
     "com.unity.entities.graphics": "1.2.1",
     "com.unity.ide.visualstudio": "2.0.22",

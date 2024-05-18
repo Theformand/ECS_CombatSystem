@@ -77,9 +77,9 @@ MonoBehaviour:
     ComponentArray:
     - AuthoringData:
         NumBulletsPerAttack: 1
-        AttacksPerSecond: 8.59
+        AttacksPerSecond: 10
         AngleSpread: 0
-        AccuracySpread: 15.77
+        AccuracySpread: 5
         BulletMoveSpeed: 45
         Damage: 10
         Pierce: 10
@@ -101,6 +101,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e024b52f91cbbaa4eab20a09c77a9757, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ActivationRange: 28.93
+  ActivationRange: 10.2
   RequiresLOS: 1
   TargetingMode: 0

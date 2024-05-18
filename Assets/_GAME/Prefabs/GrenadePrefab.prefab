@@ -48,6 +48,22 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: deb937f4093eaa34c90d0d4dd4546e18, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  InfoArray:
+    ComponentArray:
+    - AuthoringData:
+        GrenadeSettings:
+          LifeTime: 0
+          ExplosionRadius: 0
+          DamageAtCenter: 0
+          DamageType: 0
+          ExplosionType: 0
+          Cluster: 0
+          NumClusterGrenades: 0
+          ThrowForce: 0
+          ThrowUpForce: 0
+        LifeTime: 0
+        Cluster: 0
+      References: []
 --- !u!114 &-1646831253080490252
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -4,6 +4,9 @@ using Unity.Entities;
 using Unity.Mathematics;
 using Unity.Physics;
 using Unity.Transforms;
+using UnityEngine;
+using static Utils;
+using Random = Unity.Mathematics.Random;
 
 [UpdateInGroup(typeof(SkillSystemGroup))]
 public partial struct ProjectileSkillSystem : ISystem
@@ -35,17 +38,19 @@ public partial struct ProjectileSkillSystem : ISystem
             playerPos = transform.Position;
         }
         var time = (float)SystemAPI.Time.ElapsedTime;
+        var dt = SystemAPI.Time.DeltaTime;
         NativeArray<LocalTransform> allTransforms = entityQuery.ToComponentDataArray<LocalTransform>(Allocator.Temp);
         NativeArray<EnemyTag> allEnemies = entityQuery.ToComponentDataArray<EnemyTag>(Allocator.Temp);
 
-        foreach (var (qshotData, reload, activationData) in SystemAPI.Query<RefRW<BulletSkillShotData>, RefRW<SkillReloadData>, SkillActivationData>())
+        foreach (var (qSkilldata, qRl, activationData) in SystemAPI.Query<RefRW<BulletSkillData>, RefRW<SkillReloadData>, SkillActivationData>())
         {
-            ref readonly var shotData = ref qshotData.ValueRO;
-            ref var shotDataW = ref qshotData.ValueRW;
-            ref var reloadW = ref reload.ValueRW;
+            ref readonly var skillData = ref qSkilldata.ValueRO;
+            ref readonly var reload = ref qRl.ValueRO;
+            ref var skillDataW = ref qSkilldata.ValueRW;
+            ref var reloadW = ref qRl.ValueRW;
 
-            var isReloaded = reload.ValueRO.TimeCurrent <= 0f;
-            bool canShoot = time > shotData.TimeStampNextShot  && reload.ValueRO.MagCountCurrent > 0;
+            var isReloaded = reload.TimeCurrent <= 0f;
+            bool canShoot = time > skillData.TimeStampNextShot && reload.MagCountCurrent > 0;
             if (!canShoot)
                 continue;
 
@@ -56,12 +61,12 @@ public partial struct ProjectileSkillSystem : ISystem
             if (activationData.TargetingMode == SkillTargetingMode.CLOSEST)
             {
                 int idxTarget = Utils.GetIndexOfClosestWithLOS(ref allTransforms, ref playerPos, activationData.ActivationRangeSqr, ref physicsWorld);
-                if (idxTarget == -1)
-                    continue;
 
-                target = allTransforms[idxTarget]; 
-                targetFound = true;
-
+                if (idxTarget >= 0)
+                {
+                    targetFound = true;
+                    target = allTransforms[idxTarget];
+                }
             }
             else if (activationData.TargetingMode == SkillTargetingMode.HIGHEST_HP_MAX)
             {
@@ -86,51 +91,52 @@ public partial struct ProjectileSkillSystem : ISystem
                 }
                 var tArray = maxHPTransforms.AsArray();
                 int idxTarget = Utils.GetIndexOfClosestWithLOS(ref tArray, ref playerPos, activationData.ActivationRangeSqr, ref physicsWorld);
-                if (idxTarget == -1)
-                    continue;
-
-                target = allTransforms[idxTarget];
-                targetFound = true;
+                if (idxTarget >= 0)
+                {
+                    target = allTransforms[idxTarget];
+                    targetFound = true;
+                }
 
                 maxHPTransforms.Dispose();
             }
 
+            //float bulletTimer = 0f;
+            //bulletTimer += dt;
+            //float shotInterval = 1f / shotData.AttacksPerSecond;
+            //while (bulletTimer > shotInterval)
+            //{
+            //    bulletTimer -= shotInterval;
+            //}
             if (isReloaded && targetFound)
             {
                 //TODO: Figure out how to notify GO land that we need Audio here
 
                 //we are reloaded and we found a target
                 var aimDir = math.normalizesafe(target.Position - playerPos);
-                for (int i = 0; i < shotData.NumBulletsPerAttack; i++)
+                aimDir.y = 0;
+                for (int i = 0; i < skillData.NumBulletsPerAttack; i++)
                 {
-                    float3 dir = float3.zero;
-                    if (shotData.NumBulletsPerAttack == 1)
+                    float angle = 0f;
+                    float3 dir;
+                    if (skillData.NumBulletsPerAttack == 1)
                     {
                         dir = aimDir;
                     }
                     else
                     {
-                        float startingAngle = (shotData.NumBulletsPerAttack - 1) * (shotData.AngleSpread * 0.5f);
-                        float angle = -startingAngle + (i * shotData.AngleSpread);
-                        float spread = rng.NextFloat(-shotData.AccuracySpread, shotData.AccuracySpread);
-                        var rotOffset = quaternion.AxisAngle(up, math.radians(angle + spread));
-                        dir = math.mul(rotOffset, aimDir);
+                        float startingAngle = (skillData.NumBulletsPerAttack - 1) * (skillData.AngleSpread * 0.5f);
+                        angle = -startingAngle + (i * skillData.AngleSpread);
                     }
+                    float spread = rng.NextFloat(-skillData.AccuracySpread, skillData.AccuracySpread);
+                    quaternion rotOffset = quaternion.AxisAngle(up, math.radians(angle + spread));
+                    dir = math.mul(rotOffset, aimDir);
 
-                    var bullet = ecb.Instantiate(shotData.BulletPrefab);
-                    var pos = playerPos + up;
-                    var rot = quaternion.LookRotationSafe(dir, up);
-                    ecb.SetComponent(bullet, LocalTransform.FromPositionRotation(pos, rot));
-                    ecb.AddComponent(bullet, new DamageData() { Damage = shotData.DamageCurrent, DamageType = shotData.DamageType });
-                    ecb.AddComponent(bullet, new SkillMoveSpeed { Speed = shotData.BulletMoveSpeed });
-                    if (shotData.Pierce != 0)
-                        ecb.AddComponent(bullet, new DestroyAfterPierce() { PierceCurrent = shotData.Pierce });
-
-                    if (shotData.Lifetime > 0f)
-                        ecb.AddComponent(bullet, new DestroyOnTimer() { Time = shotData.Lifetime });  
-
+                    var shotArgs = ShootBulletArgs.FromBulletSkillData(skillData);
+                    shotArgs.Origin = playerPos + up; 
+                    shotArgs.Direction = dir;
+                    Utils.ShootBulletInDirection(ref shotArgs, ref ecb); 
                 }
-                shotDataW.TimeStampNextShot = time + 1f / shotData.AttacksPerSecond;
+                skillDataW.TimeStampNextShot = time + (1f / skillData.AttacksPerSecond);
                 Utils.HandleReload(ref reloadW);
             }
         }
@@ -138,38 +144,5 @@ public partial struct ProjectileSkillSystem : ISystem
         ecb.Playback(state.EntityManager);
         allEnemies.Dispose();
         allTransforms.Dispose();
-    }
-
-    [BurstCompile]
-    private int GetIndexOfClosestWithLOS(NativeArray<LocalTransform> transforms, float3 referencePoint, float rangeSqr, PhysicsWorld physicsWorld)
-    {
-        float closestDist = 100000f;
-        int idxClosest = -1;
-        var filter = new CollisionFilter()
-        {
-            CollidesWith = 1u<<2, //Environment layer
-            BelongsTo = 1u << 2, //Environment layer - should probably just be ~0u
-            GroupIndex = 0
-        };
-        float3 up = new(0f, 1f, 0f);
-
-        for (int i = 0; i < transforms.Length; i++)
-        {
-            var pos = transforms[i].Position;
-            var raycastInput = new RaycastInput()
-            {
-                Start = referencePoint + up,
-                End = pos + up,
-                Filter = filter
-            };
-
-            var distSqr = math.distancesq(referencePoint, pos);
-            if (distSqr < rangeSqr && distSqr < closestDist && !physicsWorld.CastRay(raycastInput))
-            {
-                closestDist = distSqr;
-                idxClosest = i;
-            }
-        }
-        return idxClosest;
     }
 }

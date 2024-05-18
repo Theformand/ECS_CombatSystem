@@ -1,0 +1,106 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &1242917383286234619
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 4220961471024487}
+  - component: {fileID: 5965813004466557507}
+  - component: {fileID: 4724886828131411589}
+  - component: {fileID: 1531053811975876321}
+  - component: {fileID: -2849740565232324058}
+  m_Layer: 0
+  m_Name: BulletSkill_Rifle
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &4220961471024487
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1242917383286234619}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -3.2813234, y: -8.275577, z: -13.108987}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &5965813004466557507
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1242917383286234619}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b4c218520e1f7614f9beb8618f01c061, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &4724886828131411589
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1242917383286234619}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a50a16f5f6d0beb4492e98b4b85a9d2d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Time: 2
+  MagCountBase: 30
+--- !u!114 &1531053811975876321
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1242917383286234619}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 191af0b4258c76b4d993e0332ed3d810, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  InfoArray:
+    ComponentArray:
+    - AuthoringData:
+        NumBulletsPerAttack: 1
+        AttacksPerSecond: 8.59
+        AngleSpread: 0
+        AccuracySpread: 15.77
+        BulletMoveSpeed: 45
+        Damage: 10
+        Pierce: 10
+        Lifetime: 0.5
+        DamageType: 0
+        DamageCurrent: 0
+        TimeStampNextShot: 0
+      References:
+      - {fileID: 366544697466820576, guid: dda41b4f396a82f44adc3bad2587d870, type: 3}
+--- !u!114 &-2849740565232324058
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1242917383286234619}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e024b52f91cbbaa4eab20a09c77a9757, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ActivationRange: 28.93
+  RequiresLOS: 1
+  TargetingMode: 0

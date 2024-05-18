@@ -9,6 +9,7 @@ using Unity.Cinemachine;
 public partial class InputSystem : SystemBase
 {
     private InputAction moveInputAction;
+    private UnityObjectRef<Transform> cam;
     protected override void OnCreate()
     {
         base.OnCreate();
@@ -25,8 +26,12 @@ public partial class InputSystem : SystemBase
 
     protected override void OnUpdate()
     {
+        if (cam.Value == null)
+            cam = Camera.main.transform;
+
         var inputData = SystemAPI.GetSingletonRW<InputData>();
         inputData.ValueRW.MoveDir = moveInputAction.ReadValue<Vector2>();
+        inputData.ValueRW.camRotation = cam.Value.rotation;
     }
 }
 
@@ -34,6 +39,7 @@ public partial class InputSystem : SystemBase
 public struct InputData : IComponentData
 {
     public float2 MoveDir;
+    public quaternion camRotation;
 }
 
 
@@ -41,28 +47,26 @@ public partial struct PlayerMoveSystem : ISystem
 {
     private float3 dir3d;
     private float3 up;
-    private UnityObjectRef<Transform> cam;
     private float3 lastMoveDir;
 
     public void OnCreate(ref SystemState state)
     {
         up = new(0f, 1f, 0f);
         state.RequireForUpdate<InputData>();
-        cam = Camera.main.transform;
     }
 
     public void OnDestroy(ref SystemState state) { }
 
-    //[BurstCompile]
+    [BurstCompile]
     public void OnUpdate(ref SystemState state)
     {
         var dt = SystemAPI.Time.DeltaTime;
         var inputData = SystemAPI.GetSingletonRW<InputData>();
         foreach (var (_, transform) in SystemAPI.Query<Player, RefRW<LocalTransform>>())
         {
-            var dir2d = inputData.ValueRW.MoveDir;
+            var dir2d = inputData.ValueRO.MoveDir;
             dir3d.xz = dir2d;
-            float3 camDir = cam.Value.rotation * dir3d;
+            float3 camDir = math.mul(inputData.ValueRO.camRotation, dir3d);
             dir3d.xz = camDir.xy;
             var dir = math.normalizesafe(dir3d);
             if (math.length(dir2d) > 0.5f)

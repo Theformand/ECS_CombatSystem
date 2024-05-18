@@ -78,7 +78,7 @@ public struct SkillActivationData : IComponentData
 }
 
 [Serializable]
-public struct BulletSkillShotData : IComponentData
+public struct BulletSkillData : IComponentData
 {
     public int NumBulletsPerAttack;
     public float AttacksPerSecond;
@@ -92,7 +92,6 @@ public struct BulletSkillShotData : IComponentData
     public Entity BulletPrefab;
     [HideInInspector]
     public int DamageCurrent;
-    [HideInInspector]
     public float TimeStampNextShot;
 }
 
@@ -208,6 +207,6 @@ public enum GrenadeExplosionType
 }
 
 [UpdateInGroup(typeof(SimulationSystemGroup))]
-[UpdateAfter(typeof(FixedStepSimulationSystemGroup))]
+//[UpdateAfter(typeof(FixedStepSimulationSystemGroup))]
 [UpdateBefore(typeof(TransformSystemGroup))]
 public partial class SkillSystemGroup : ComponentSystemGroup { }

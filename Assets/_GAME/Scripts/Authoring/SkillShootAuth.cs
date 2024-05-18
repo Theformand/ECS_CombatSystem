@@ -1,6 +1,6 @@
 ﻿using AutoAuthoring;
 
-public class SkillShootAuth : AutoAuthoring<BulletSkillShotData>
+public class SkillShootAuth : AutoAuthoring<BulletSkillData>
 {
 
 }

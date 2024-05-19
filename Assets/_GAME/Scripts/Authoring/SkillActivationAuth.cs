@@ -15,6 +15,7 @@ public class SkillActivationAuth : MonoBehaviour
             var ent = GetEntity(TransformUsageFlags.Dynamic);
             AddComponent(ent, new SkillActivationData()
             {
+                ActivationRange = authoring.ActivationRange,
                 ActivationRangeSqr = authoring.ActivationRange * authoring.ActivationRange,
                 RequireLOS = authoring.RequiresLOS,
                 TargetingMode = authoring.TargetingMode

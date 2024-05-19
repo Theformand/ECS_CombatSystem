@@ -14,7 +14,7 @@ public class Utils
         public float3 Origin;
         public float3 Direction;
         public int Damage;
-        public DamageType DamageType; 
+        public DamageType DamageType;
         public float MoveSpeed;
         public float Lifetime;
         public int Pierce;
@@ -31,7 +31,6 @@ public class Utils
                 Pierce = data.Pierce,
             };
         }
- 
     }
 
     [BurstCompile]
@@ -40,7 +39,7 @@ public class Utils
 
         var bullet = ecb.Instantiate(args.BulletPrefab);
         var pos = args.Origin;
-        var rot = quaternion.LookRotationSafe(args.Direction, new float3(0,1,0));
+        var rot = quaternion.LookRotationSafe(args.Direction, new float3(0, 1, 0));
         ecb.SetComponent(bullet, LocalTransform.FromPositionRotation(pos, rot));
         ecb.AddComponent(bullet, new DamageData() { Damage = args.Damage, DamageType = args.DamageType });
         ecb.AddComponent(bullet, new SkillMoveSpeed { Speed = args.MoveSpeed });
@@ -88,7 +87,7 @@ public class Utils
         return idxClosest;
     }
 
-    [BurstCompile] 
+    [BurstCompile]
     public static void HandleReload(ref SkillReloadData reload, int ammoConsumed = 1)
     {
         reload.MagCountCurrent -= ammoConsumed;

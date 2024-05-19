@@ -4,7 +4,7 @@ using Unity.Mathematics;
 using Unity.Transforms;
 using UnityEngine;
 
-public struct Config : IComponentData
+public struct CurveLib : IComponentData
 {
     public DotsCurve RocketHeightCurve;
 
@@ -26,11 +26,11 @@ public struct HitInfo : IBufferElementData
 
 public struct DotsCurve : IComponentData
 {
-    public BlobAssetReference<SampledCurve> Value;
+    public BlobAssetReference<DiscretizedCurve> Value;
     public readonly float GetValueAtFrac(float time) => Value.Value.GetValueAtFrac(time);
 }
 
-public struct SampledCurve
+public struct DiscretizedCurve
 {
     public BlobArray<float> Points;
     public int NumSamples;
@@ -128,7 +128,7 @@ public struct RocketSettings
     public float FlightTime;
     public float ApexHeight;
     public float NoiseScaleX;
-    public float NoiseScaleY;
+    public float NoiseScaleZ;
     public float NoiseFreq;
 }
 

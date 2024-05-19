@@ -4,16 +4,16 @@ using Unity.Entities;
 using UnityEditor.PackageManager;
 using UnityEngine;
 
-public class ConfigAuth : MonoBehaviour
+public class CurveLibAuth : MonoBehaviour
 {
     public CurveAuthWrapper RocketHeightCurve;
 
-    public class Baker : Baker<ConfigAuth>
+    public class Baker : Baker<CurveLibAuth>
     {
-        public override void Bake(ConfigAuth authoring)
+        public override void Bake(CurveLibAuth authoring)
         {
             var ent = GetEntity(TransformUsageFlags.None);
-            AddComponent(ent, new Config
+            AddComponent(ent, new CurveLib
             {
                 RocketHeightCurve = BakeCurve(authoring.RocketHeightCurve),
             });
@@ -22,7 +22,7 @@ public class ConfigAuth : MonoBehaviour
         public DotsCurve BakeCurve(CurveAuthWrapper curveAuth)
         {
             using var builder = new BlobBuilder(Allocator.Temp);
-            ref var sampledCurve = ref builder.ConstructRoot<SampledCurve>();
+            ref var sampledCurve = ref builder.ConstructRoot<DiscretizedCurve>();
             var sampledCurveArray = builder.Allocate(ref sampledCurve.Points, curveAuth.NumSamples);
             sampledCurve.NumSamples = curveAuth.NumSamples;
 
@@ -32,8 +32,8 @@ public class ConfigAuth : MonoBehaviour
                 var sampleValue = curveAuth.Curve.Evaluate(samplePoint);
                 sampledCurveArray[i] = sampleValue;
             }
-            var blobAssetRef = builder.CreateBlobAssetReference<SampledCurve>(Allocator.Temp);
-            return  new DotsCurve { Value = blobAssetRef };
+            var blobAssetRef = builder.CreateBlobAssetReference<DiscretizedCurve>(Allocator.Temp);
+            return new DotsCurve { Value = blobAssetRef };
         }
     }
 }

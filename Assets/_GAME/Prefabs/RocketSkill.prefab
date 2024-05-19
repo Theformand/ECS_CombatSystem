@@ -47,7 +47,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   RocketPrefab: {fileID: 5598008377410512700, guid: f9980b6e8b19f5448bfd508a5d94fff7, type: 3}
-  NumRockets: 26
   Damage: 11
   DamageType: 0
   RocketsPerSecond: 8.3
@@ -61,10 +60,10 @@ MonoBehaviour:
       y: 0
       z: 0
     FlightTime: 1.64
-    ApexHeight: 3
-    NoiseScaleX: 0
-    NoiseScaleY: 0
-    NoiseFreq: 0
+    ApexHeight: 8.62
+    NoiseScaleX: 1
+    NoiseScaleZ: 1
+    NoiseFreq: 1
 --- !u!114 &8735909259047230208
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -77,9 +76,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e024b52f91cbbaa4eab20a09c77a9757, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ActivationRange: 10
+  ActivationRange: 15.88
   RequiresLOS: 0
-  TargetingMode: 0
+  TargetingMode: 3
 --- !u!114 &6918540023526958513
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -93,4 +92,4 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Time: 1.5
-  MagCountBase: 30
+  MagCountBase: 12

@@ -320,26 +320,6 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 283753433433567854, guid: 30c206812bb2aad4eae88f0202cfd099, type: 3}
-      propertyPath: NumRockets
-      value: 12
-      objectReference: {fileID: 0}
-    - target: {fileID: 283753433433567854, guid: 30c206812bb2aad4eae88f0202cfd099, type: 3}
-      propertyPath: Settings.NoiseFreq
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 283753433433567854, guid: 30c206812bb2aad4eae88f0202cfd099, type: 3}
-      propertyPath: Settings.ApexHeight
-      value: 8.62
-      objectReference: {fileID: 0}
-    - target: {fileID: 283753433433567854, guid: 30c206812bb2aad4eae88f0202cfd099, type: 3}
-      propertyPath: Settings.NoiseScaleX
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 283753433433567854, guid: 30c206812bb2aad4eae88f0202cfd099, type: 3}
-      propertyPath: Settings.NoiseScaleZ
-      value: 1
-      objectReference: {fileID: 0}
     - target: {fileID: 4443360149383624742, guid: 30c206812bb2aad4eae88f0202cfd099, type: 3}
       propertyPath: m_Name
       value: RocketSkill
@@ -383,10 +363,6 @@ PrefabInstance:
     - target: {fileID: 5595203539364200288, guid: 30c206812bb2aad4eae88f0202cfd099, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 6918540023526958513, guid: 30c206812bb2aad4eae88f0202cfd099, type: 3}
-      propertyPath: MagCountBase
-      value: 12
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

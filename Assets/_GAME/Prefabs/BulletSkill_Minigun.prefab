@@ -103,4 +103,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ActivationRange: 10.9
   RequiresLOS: 1
-  TargetingMode: 0
+  TargetingMode: 4

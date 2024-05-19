@@ -23,6 +23,7 @@ public partial struct RocketSwarmSystem : ISystem
     public void OnCreate(ref SystemState state)
     {
         state.RequireForUpdate<CurveLib>();
+        state.RequireForUpdate<Player>();
         rng = new Random();
         rng.InitState();
         transformLUT = state.GetComponentLookup<LocalTransform>();
@@ -71,8 +72,6 @@ public partial struct RocketSwarmSystem : ISystem
             var targetTransform = transformLUT[targetEnt];
             var rocket = ecb.Instantiate(skillData.RocketPrefab);
             var settings = skillData.Settings;
-            //float2 random = rng.NextFloat2() * rng.NextFloat(-15f, 15f);
-            //settings.Destination = playerPos + new float3(random.x, 0f, random.y);
             settings.LaunchPoint = playerPos + (math.up() * 4f);
             ecb.SetComponent(rocket, new Rocket
             {

@@ -30,12 +30,16 @@ public partial struct ProjectileSkillSystem : ISystem
     public void OnUpdate(ref SystemState state)
     {
         float3 playerPos = float3.zero;
+        quaternion playerRot = quaternion.identity;
         float3 up = new(0, 1, 0);
+        float3 playerFwd = float3.zero;
         var physicsWorld = SystemAPI.GetSingleton<PhysicsWorldSingleton>().PhysicsWorld;
         var ecb = new EntityCommandBuffer(Allocator.Temp);
         foreach (var (player, transform) in SystemAPI.Query<Player, LocalTransform>())
         {
             playerPos = transform.Position;
+            playerFwd = transform.Forward();
+            playerRot = transform.Rotation;
         }
         var time = (float)SystemAPI.Time.ElapsedTime;
         var dt = SystemAPI.Time.DeltaTime;
@@ -56,6 +60,7 @@ public partial struct ProjectileSkillSystem : ISystem
 
             bool targetFound = false;
             LocalTransform target = LocalTransform.Identity;
+            float3 aimDir = float3.zero;
 
             // Aqcuire target based on the targeting mode of the skill
             if (activationData.TargetingMode == SkillTargetingMode.CLOSEST)
@@ -66,6 +71,8 @@ public partial struct ProjectileSkillSystem : ISystem
                 {
                     targetFound = true;
                     target = allTransforms[idxTarget];
+                    aimDir = math.normalizesafe(target.Position - playerPos);
+                    aimDir.y = 0f;
                 }
             }
             else if (activationData.TargetingMode == SkillTargetingMode.HIGHEST_HP_MAX)
@@ -95,11 +102,37 @@ public partial struct ProjectileSkillSystem : ISystem
                 {
                     target = allTransforms[idxTarget];
                     targetFound = true;
+                    aimDir = math.normalizesafe(target.Position - playerPos);
                 }
 
                 maxHPTransforms.Dispose();
             }
+            else if (activationData.TargetingMode == SkillTargetingMode.PLAYER_FWD || activationData.TargetingMode == SkillTargetingMode.PLAYER_BACK)
+            {
+                float3 referenceFwd = activationData.TargetingMode == SkillTargetingMode.PLAYER_FWD ? playerFwd : -playerFwd;
+                var filter = new CollisionFilter()
+                {
+                    CollidesWith = 1u << 1, //Environment layer
+                    BelongsTo = 1u << 3, 
+                    GroupIndex = 0
+                };
+                NativeList<DistanceHit> hitList = new(Allocator.Temp);
+                physicsWorld.OverlapSphere(playerPos, activationData.ActivationRange, ref hitList, filter);
+                if (hitList.Length == 0)
+                    continue;
 
+                for (int i = 0; i < hitList.Length; i++)
+                {
+                    var dirToTarget = math.normalizesafe(hitList[i].Position - playerPos);
+                    if (math.dot(referenceFwd, dirToTarget) > 0.97f)
+                    {
+                        targetFound = true;
+                        break;
+                    }
+                }
+                aimDir = referenceFwd;
+            }
+            
             //float bulletTimer = 0f;
             //bulletTimer += dt;
             //float shotInterval = 1f / shotData.AttacksPerSecond;
@@ -112,7 +145,6 @@ public partial struct ProjectileSkillSystem : ISystem
                 //TODO: Figure out how to notify GO land that we need Audio here
 
                 //we are reloaded and we found a target
-                var aimDir = math.normalizesafe(target.Position - playerPos);
                 aimDir.y = 0;
                 for (int i = 0; i < skillData.NumBulletsPerAttack; i++)
                 {

@@ -227,7 +227,9 @@ public enum SkillTargetingMode
     CLOSEST,
     HIGHEST_HP_MAX,
     HIGHEST_HP_CURRENT,
-    RANDOM
+    RANDOM,
+    PLAYER_FWD,
+    PLAYER_BACK,
 }
 
 public struct DestroyEntityTag : IComponentData { }

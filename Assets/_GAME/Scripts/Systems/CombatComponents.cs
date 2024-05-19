@@ -4,6 +4,12 @@ using Unity.Mathematics;
 using Unity.Transforms;
 using UnityEngine;
 
+public struct Config : IComponentData
+{
+    public DotsCurve RocketHeightCurve;
+
+}
+
 [Serializable]
 public struct SkillMoveSpeed : IComponentData
 {
@@ -18,10 +24,29 @@ public struct HitInfo : IBufferElementData
     public Entity HitEntity;
 }
 
-public struct SkillPrefab : IComponentData
+public struct DotsCurve : IComponentData
 {
-    public Entity Prefab;
+    public BlobAssetReference<SampledCurve> Value;
+    public readonly float GetValueAtFrac(float time) => Value.Value.GetValueAtFrac(time);
 }
+
+public struct SampledCurve
+{
+    public BlobArray<float> Points;
+    public int NumSamples;
+
+    public float GetValueAtFrac(float time)
+    {
+        var approxIdx = (NumSamples - 1) * time;
+        var prevIdx = (int)math.floor(approxIdx);
+        if (prevIdx >= NumSamples - 1)
+            return Points[NumSamples - 1];
+
+        var idxRemainder = approxIdx - prevIdx;
+        return math.lerp(Points[prevIdx], Points[prevIdx + 1], idxRemainder);
+    }
+}
+
 
 [Serializable]
 public struct HitPoints : IComponentData
@@ -92,6 +117,32 @@ public struct BulletSkillData : IComponentData
     public Entity BulletPrefab;
     [HideInInspector]
     public int DamageCurrent;
+    public float TimeStampNextShot;
+}
+
+[Serializable]
+public struct RocketSettings
+{
+    public float3 Destination;
+    public float3 LaunchPoint;
+    public float FlightTime;
+    public float ApexHeight;
+    public float NoiseScaleX;
+    public float NoiseScaleY;
+    public float NoiseFreq;
+}
+
+
+[Serializable]
+public struct RocketSwarmSkillData : IComponentData
+{
+    public Entity RocketPrefab;
+    public int Damage;
+    public DamageType DamageType;
+    public RocketSettings Settings;
+    public float RocketsPerSecond;
+
+    [HideInInspector]
     public float TimeStampNextShot;
 }
 

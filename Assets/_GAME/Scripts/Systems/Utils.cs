@@ -14,7 +14,7 @@ public class Utils
         public float3 Origin;
         public float3 Direction;
         public int Damage;
-        public DamageType DamageType;
+        public DamageType DamageType; 
         public float MoveSpeed;
         public float Lifetime;
         public int Pierce;

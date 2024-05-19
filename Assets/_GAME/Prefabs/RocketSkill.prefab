@@ -1,0 +1,96 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &4443360149383624742
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 5595203539364200288}
+  - component: {fileID: 283753433433567854}
+  - component: {fileID: 8735909259047230208}
+  - component: {fileID: 6918540023526958513}
+  m_Layer: 0
+  m_Name: RocketSkill
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &5595203539364200288
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4443360149383624742}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -12.32753, y: 2.206249, z: -0.08119678}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &283753433433567854
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4443360149383624742}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a632b6ddecc73394195f30829c6ff3bb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  RocketPrefab: {fileID: 5598008377410512700, guid: f9980b6e8b19f5448bfd508a5d94fff7, type: 3}
+  NumRockets: 26
+  Damage: 11
+  DamageType: 0
+  RocketsPerSecond: 8.3
+  Settings:
+    Destination:
+      x: 0
+      y: 0
+      z: 0
+    LaunchPoint:
+      x: 0
+      y: 0
+      z: 0
+    FlightTime: 1.64
+    ApexHeight: 3
+    NoiseScaleX: 0
+    NoiseScaleY: 0
+    NoiseFreq: 0
+--- !u!114 &8735909259047230208
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4443360149383624742}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e024b52f91cbbaa4eab20a09c77a9757, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ActivationRange: 10
+  RequiresLOS: 0
+  TargetingMode: 0
+--- !u!114 &6918540023526958513
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4443360149383624742}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a50a16f5f6d0beb4492e98b4b85a9d2d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Time: 1.5
+  MagCountBase: 30

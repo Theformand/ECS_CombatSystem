@@ -5,8 +5,6 @@ using Unity.Physics;
 using Unity.Physics.Systems;
 using Unity.Collections;
 using Unity.Mathematics;
-using System;
-
 
 partial struct MoveForwardSystem : ISystem
 {

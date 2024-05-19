@@ -36,7 +36,6 @@ public partial struct RocketSwarmSystem : ISystem
         var time = (float)SystemAPI.Time.ElapsedTime;
         var dt = SystemAPI.Time.DeltaTime;
         var ecb = new EntityCommandBuffer(Allocator.Temp);
-        float3 up = new float3(0, 1, 0);
         var physics = SystemAPI.GetSingleton<PhysicsWorldSingleton>();
 
         foreach (var transform in SystemAPI.Query<LocalTransform>().WithAll<Player>())
@@ -74,7 +73,7 @@ public partial struct RocketSwarmSystem : ISystem
             var settings = skillData.Settings;
             //float2 random = rng.NextFloat2() * rng.NextFloat(-15f, 15f);
             //settings.Destination = playerPos + new float3(random.x, 0f, random.y);
-            settings.LaunchPoint = playerPos + (up * 4f);
+            settings.LaunchPoint = playerPos + (math.up() * 4f);
             ecb.SetComponent(rocket, new Rocket
             {
                 Target = targetEnt,
@@ -82,7 +81,7 @@ public partial struct RocketSwarmSystem : ISystem
                 RocketSettings = settings,
                 T = 0f
             });
-            ecb.SetComponent(rocket, LocalTransform.FromPosition(playerPos + up));
+            ecb.SetComponent(rocket, LocalTransform.FromPosition(playerPos + math.up()));
             skillDataW.TimeStampNextShot = time + (1f / skillData.RocketsPerSecond);
             Utils.HandleReload(ref reloadW, 1);
         }
@@ -115,7 +114,7 @@ public partial struct RocketSwarmSystem : ISystem
             //horizontalLerp.z += zSin;
             pos.y = height;
             pos.xz = horizontalLerp.xz;
-            var rot = quaternion.LookRotation(math.normalizesafe(pos - lastPos), up);
+            var rot = quaternion.LookRotation(math.normalizesafe(pos - lastPos), math.up());
             transform.ValueRW.Position = pos;
             transform.ValueRW.Rotation = rot;
             qr.ValueRW.T += dt / settings.FlightTime;

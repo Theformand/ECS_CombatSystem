@@ -39,10 +39,8 @@ public partial struct RocketSwarmSystem : ISystem
         var ecb = new EntityCommandBuffer(Allocator.Temp);
         var physics = SystemAPI.GetSingleton<PhysicsWorldSingleton>();
 
-        foreach (var transform in SystemAPI.Query<LocalTransform>().WithAll<Player>())
-        {
-            playerPos = transform.Position;
-        }
+        var playerEnt = SystemAPI.GetSingletonEntity<Player>();
+        var playerPos = SystemAPI.GetComponent<LocalTransform>(playerEnt).Position;
 
         transformLUT.Update(ref state);
         var hitList = new NativeList<DistanceHit>(Allocator.Temp);

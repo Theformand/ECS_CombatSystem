@@ -1,11 +1,13 @@
 ﻿using Unity.Burst;
+using Unity.Burst.CompilerServices;
 using Unity.Collections;
 using Unity.Entities;
 using Unity.Mathematics;
 using Unity.Physics;
 using Unity.Transforms;
-using UnityEngine;
 using static PickupAttractorSystem;
+using Unity.Physics.Extensions;
+
 
 public struct PlayerPickupTrigger : IComponentData
 {
@@ -18,6 +20,7 @@ public partial struct PickupTriggerSystem : ISystem
     private ComponentLookup<Pickup> PickupLUT;
     private ComponentLookup<LocalTransform> transformLUT;
     private ComponentLookup<AttractedToPlayer> AttracteesLUT;
+    private ComponentLookup<PhysicsCollider> colliderLUT;
 
     public void OnCreate(ref SystemState state)
     {
@@ -25,6 +28,7 @@ public partial struct PickupTriggerSystem : ISystem
         PickupLUT = state.GetComponentLookup<Pickup>();
         transformLUT = state.GetComponentLookup<LocalTransform>();
         AttracteesLUT = state.GetComponentLookup<AttractedToPlayer>();
+        colliderLUT = state.GetComponentLookup<PhysicsCollider>();
     }
 
     public void OnDestroy(ref SystemState state) { }
@@ -32,14 +36,14 @@ public partial struct PickupTriggerSystem : ISystem
     [BurstCompile]
     public void OnUpdate(ref SystemState state)
     {
-        
+
         float3 playerPos = float3.zero;
         foreach (var transform in SystemAPI.Query<LocalTransform>().WithAll<Player>())
         {
             playerPos = transform.Position;
         }
 
-        var ecbSingleton = SystemAPI.GetSingleton<BeginSimulationEntityCommandBufferSystem.Singleton>();
+        // Check for picked up magnet entities
         var magnetEcb = new EntityCommandBuffer(Allocator.Temp);
         foreach (var (collect, collectEnt) in SystemAPI.Query<CollectAllXP>().WithEntityAccess())
         {
@@ -53,7 +57,7 @@ public partial struct PickupTriggerSystem : ISystem
             //    attract.ValueRW.IsXP = !pickup.HasDistanceOverride;
             //}
 
-            foreach (var (pickup,entity) in SystemAPI.Query<Pickup>().WithEntityAccess())
+            foreach (var (pickup, entity) in SystemAPI.Query<Pickup>().WithEntityAccess())
             {
                 magnetEcb.AddComponent(entity, new AttractedToPlayer
                 {
@@ -66,11 +70,14 @@ public partial struct PickupTriggerSystem : ISystem
         magnetEcb.Playback(state.EntityManager);
 
 
+        //Prep for regular trigger job
         TriggerLUT.Update(ref state);
         AttracteesLUT.Update(ref state);
         PickupLUT.Update(ref state);
         transformLUT.Update(ref state);
+        colliderLUT.Update(ref state);
 
+        var ecbSingleton = SystemAPI.GetSingleton<BeginSimulationEntityCommandBufferSystem.Singleton>();
         SimulationSingleton simulation = SystemAPI.GetSingleton<SimulationSingleton>();
         var ecb = ecbSingleton.CreateCommandBuffer(state.WorldUnmanaged);
         state.Dependency = new PickupTriggerJob
@@ -80,6 +87,7 @@ public partial struct PickupTriggerSystem : ISystem
             TriggerLUT = TriggerLUT,
             Pickups = PickupLUT,
             PickupTransforms = transformLUT,
+            ColliderLUT = colliderLUT,
             PlayerPos = playerPos,
 
         }.Schedule(simulation, state.Dependency);
@@ -93,6 +101,7 @@ public partial struct PickupTriggerSystem : ISystem
         [ReadOnly] public ComponentLookup<Pickup> Pickups;
         [ReadOnly] public ComponentLookup<LocalTransform> PickupTransforms;
         [ReadOnly] public ComponentLookup<AttractedToPlayer> ExistingAttractees;
+        [ReadOnly] public ComponentLookup<PhysicsCollider> ColliderLUT;
         //[ReadOnly] public ComponentLookup<EnabledRefRW<AttractedToPlayer>> ExistingAttracteesEnable;
 
         public EntityCommandBuffer ecb;
@@ -100,6 +109,7 @@ public partial struct PickupTriggerSystem : ISystem
         [BurstCompile]
         public void Execute(TriggerEvent triggerEvent)
         {
+
             Entity pickup;
 
             if (TriggerLUT.HasComponent(triggerEvent.EntityA) && Pickups.HasComponent(triggerEvent.EntityB))
@@ -119,16 +129,38 @@ public partial struct PickupTriggerSystem : ISystem
             if (ExistingAttractees.HasComponent(pickup) || !closeEnough)
                 return;
 
+            bool isXP = !pickupData.HasDistanceOverride;
+            // Replace collisionFilter on larger pickups so they dont scrape along the ground
+            if (!isXP)
+            {
+                var collider = ColliderLUT[pickup];
+                BlobAssetReference<Collider> ColliderBlobReference = collider.Value.Value.Clone();
+                CollisionFilter oldFilter = collider.Value.Value.GetCollisionFilter();
+                PhysicsCollider newCollider;
+
+                ColliderBlobReference.Value.SetCollisionFilter(new CollisionFilter
+                {
+                    BelongsTo = 0b_0000_0000_0000_0000_0000_0000_0000_0000,
+                    CollidesWith = 0b_0000_0000_0000_0000_0000_0000_0000_0000,
+                    GroupIndex = oldFilter.GroupIndex,
+                });
+                newCollider = ColliderBlobReference.AsComponent();
+                ecb.SetComponent(pickup, newCollider);
+            }
             ecb.AddComponent(pickup, new AttractedToPlayer
             {
                 RampUpT = 0f,
                 RampUpDuration = 1f,
-                IsXP = !pickupData.HasDistanceOverride,
+                IsXP = isXP,
             });
-            ecb.SetComponent(pickup, new PhysicsVelocity
+
+            if (Hint.Likely(isXP))
             {
-                Angular = new float3(1f, 2f, 3f) * 10f,
-            });
+                ecb.SetComponent(pickup, new PhysicsVelocity
+                {
+                    Angular = new float3(1f, 2f, 3f) * 10f,
+                });
+            }
 
         }
     }
@@ -207,7 +239,11 @@ public partial struct PickupAttractorSystem : ISystem
             attract.RampUpT = t;
             var dirToPlayer = PlayerPos - transform.Position;
 
-            if (math.lengthsq(dirToPlayer) < collectRadius)
+            if (Hint.Likely(math.lengthsq(dirToPlayer) > collectRadius))
+            {
+                velocity.Linear = math.normalizesafe(dirToPlayer) * attract.Vel;
+            }
+            else
             {
                 ecb.DestroyEntity(sortkey, entity);
                 if (pickup.PickupType == PickupType.Magnet)
@@ -216,8 +252,6 @@ public partial struct PickupAttractorSystem : ISystem
                     ecb.AddComponent(sortkey, ent, new CollectAllXP { });
                 }
             }
-            else
-                velocity.Linear = math.normalizesafe(dirToPlayer) * attract.Vel;
         }
     }
 }

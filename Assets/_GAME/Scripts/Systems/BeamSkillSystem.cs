@@ -4,17 +4,15 @@ using Unity.Entities;
 using Unity.Mathematics;
 using Unity.Physics;
 using Unity.Transforms;
-using Debug = UnityEngine.Debug;
 
 [UpdateInGroup(typeof(SkillSystemGroup))]
 public partial struct BeamSkillSystem : ISystem
 {
-    private float3 up;
     private ComponentLookup<EnemyTag> enemyLUT;
 
     public void OnCreate(ref SystemState state)
     {
-        up = new float3(0, 1, 0);
+        state.RequireForUpdate<Player>();
         enemyLUT = state.GetComponentLookup<EnemyTag>(true);
     }
 
@@ -23,12 +21,8 @@ public partial struct BeamSkillSystem : ISystem
     [BurstCompile]
     public void OnUpdate(ref SystemState state)
     {
-        float3 playerPos = float3.zero;
-
-        foreach (var (_, transform) in SystemAPI.Query<Player, LocalTransform>())
-        {
-            playerPos = transform.Position + up;
-        }
+        var playerEnt = SystemAPI.GetSingletonEntity<Player>();
+        var playerPos = SystemAPI.GetComponent<LocalTransform>(playerEnt).Position;
 
         var dt = SystemAPI.Time.DeltaTime;
         var time = ((float)SystemAPI.Time.ElapsedTime);
@@ -68,7 +62,7 @@ public partial struct BeamSkillSystem : ISystem
                 dir = math.normalize(dir);
                 var start = playerPos + dir * 0.2f;
                 var end = start + dir * beamData.BeamLengthCurrent;
-                Debug.DrawLine(start, end);
+                UnityEngine.Debug.DrawLine(start, end);
 
 
                 if (beamData.TimeStampNextTick < time)

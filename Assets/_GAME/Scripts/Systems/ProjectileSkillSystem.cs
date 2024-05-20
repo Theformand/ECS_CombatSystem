@@ -28,18 +28,15 @@ public partial struct ProjectileSkillSystem : ISystem
     [BurstCompile]
     public void OnUpdate(ref SystemState state)
     {
-        float3 playerPos = float3.zero;
-        quaternion playerRot = quaternion.identity;
-        float3 up = new(0, 1, 0);
-        float3 playerFwd = float3.zero;
         var physicsWorld = SystemAPI.GetSingleton<PhysicsWorldSingleton>().PhysicsWorld;
         var ecb = new EntityCommandBuffer(Allocator.Temp);
-        foreach (var (player, transform) in SystemAPI.Query<Player, LocalTransform>())
-        {
-            playerPos = transform.Position;
-            playerFwd = transform.Forward();
-            playerRot = transform.Rotation;
-        }
+        var playerEnt = SystemAPI.GetSingletonEntity<Player>();
+        var playerTransform = SystemAPI.GetComponent<LocalTransform>(playerEnt);
+
+        var playerRot = playerTransform.Rotation;
+        var playerFwd = playerTransform.Forward();
+        float3 playerPos = playerTransform.Position;
+      
         var time = (float)SystemAPI.Time.ElapsedTime;
         var dt = SystemAPI.Time.DeltaTime;
         NativeArray<LocalTransform> allTransforms = entityQuery.ToComponentDataArray<LocalTransform>(Allocator.Temp);
@@ -142,6 +139,7 @@ public partial struct ProjectileSkillSystem : ISystem
             //}
             if (isReloaded && targetFound)
             {
+                var up = math.up();
                 //TODO: Figure out how to notify GO land that we need Audio here
                 aimDir.y = 0;
                 for (int i = 0; i < skillData.NumBulletsPerAttack; i++)

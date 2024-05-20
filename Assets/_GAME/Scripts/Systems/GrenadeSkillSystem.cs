@@ -122,7 +122,7 @@ public partial struct GrenadeLifeTimeSystem : ISystem
                     GrenadeSettings = grenade.GrenadeSettings,
                     GrenadePrefab = grenade.ClusterGrenade,
                     Position = transform.Position,
-                    LifeTime = grenade.LifeTime * 2f
+                    LifeTime = grenade.LifeTime +3f
                 });
 
                 ecb.DestroyEntity(entity);
@@ -186,10 +186,10 @@ public partial struct GrenadeLifeTimeSystem : ISystem
                     dir = math.normalize(dir);
 
                     var grenade = ecb.Instantiate(cluster.GrenadePrefab);
-                    float scalar = .6f;
+                    float scalar = .3f;
                     dir.x *= settings.ThrowForce * scalar;
                     dir.z *= settings.ThrowForce * scalar;
-                    dir.y *= settings.ThrowUpForce * scalar * 2f;
+                    dir.y = 5f;
                     var newSettings = new GrenadeSettings()
                     {
                         Cluster = false,

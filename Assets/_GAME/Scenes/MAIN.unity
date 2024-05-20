@@ -350,6 +350,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: '[Graphy]'
       objectReference: {fileID: 0}
+    - target: {fileID: 177638, guid: 0abab5bb77339e4428787a870eb31bd3, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 11496292, guid: 0abab5bb77339e4428787a870eb31bd3, type: 3}
       propertyPath: m_audioModuleState
       value: 4
@@ -476,7 +480,7 @@ Transform:
   m_GameObject: {fileID: 850635803}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 31, y: 0.09, z: 33.8}
+  m_LocalPosition: {x: -0.20000076, y: 0.09, z: 7.700001}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -745,7 +749,7 @@ Transform:
   m_GameObject: {fileID: 1725285872}
   serializedVersion: 2
   m_LocalRotation: {x: -0.000000012890264, y: 0.86747116, z: -0.4974875, w: -0.000000022476812}
-  m_LocalPosition: {x: 31, y: 17.01, z: 43.699997}
+  m_LocalPosition: {x: -0.20000076, y: 17.01, z: 17.6}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:

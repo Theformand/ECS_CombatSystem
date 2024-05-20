@@ -124,7 +124,7 @@ public partial struct ProjectileSkillSystem : ISystem
                 for (int i = 0; i < hitList.Length; i++)
                 {
                     var dirToTarget = math.normalizesafe(hitList[i].Position - playerPos);
-                    if (math.dot(referenceFwd, dirToTarget) > 0.97f)
+                    if (math.dot(referenceFwd, dirToTarget) > 0.92f)
                     {
                         targetFound = true;
                         break;

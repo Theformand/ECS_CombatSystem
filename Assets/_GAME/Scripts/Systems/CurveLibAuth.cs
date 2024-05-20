@@ -7,6 +7,7 @@ using UnityEngine;
 public class CurveLibAuth : MonoBehaviour
 {
     public CurveAuthWrapper RocketHeightCurve;
+    public CurveAuthWrapper PickupVelocityCurve;
 
     public class Baker : Baker<CurveLibAuth>
     {
@@ -16,6 +17,7 @@ public class CurveLibAuth : MonoBehaviour
             AddComponent(ent, new CurveLib
             {
                 RocketHeightCurve = BakeCurve(authoring.RocketHeightCurve),
+                PickupVelocityCurve = BakeCurve(authoring.PickupVelocityCurve)
             });
         }
 
@@ -33,7 +35,7 @@ public class CurveLibAuth : MonoBehaviour
                 sampledCurveArray[i] = sampleValue;
             }
             var blobAssetRef = builder.CreateBlobAssetReference<DiscretizedCurve>(Allocator.Temp);
-            return new DotsCurve { Value = blobAssetRef };
+            return new DotsCurve { BlobRef = blobAssetRef };
         }
     }
 }

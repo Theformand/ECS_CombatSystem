@@ -7,7 +7,7 @@ using UnityEngine;
 public struct CurveLib : IComponentData
 {
     public DotsCurve RocketHeightCurve;
-
+    public DotsCurve PickupVelocityCurve;
 }
 
 [Serializable]
@@ -26,8 +26,8 @@ public struct HitInfo : IBufferElementData
 
 public struct DotsCurve : IComponentData
 {
-    public BlobAssetReference<DiscretizedCurve> Value;
-    public readonly float GetValueAtFrac(float time) => Value.Value.GetValueAtFrac(time);
+    public BlobAssetReference<DiscretizedCurve> BlobRef;
+    public readonly float GetValueAtFrac(float time) => BlobRef.Value.GetValueAtFrac(time);
 }
 
 public struct DiscretizedCurve
@@ -220,6 +220,19 @@ public struct GrenadeData : IComponentData
 public struct Player : IComponentData
 {
     public int Health;
+    public float PickupDistance;
+}
+
+public struct Pickup : IComponentData
+{
+    public PickupType PickupType;
+    public int Value;
+}
+
+public enum PickupType
+{
+    XP,
+    Mineral
 }
 
 public enum SkillTargetingMode

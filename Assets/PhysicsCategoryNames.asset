@@ -19,8 +19,8 @@ MonoBehaviour:
   - Player
   - Grenades
   - Projectiles
-  - 
-  - 
+  - Pickups
+  - PickupTrigger
   - 
   - 
   - 

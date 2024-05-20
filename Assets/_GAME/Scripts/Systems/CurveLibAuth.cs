@@ -1,7 +1,6 @@
 ﻿using System;
 using Unity.Collections;
 using Unity.Entities;
-using UnityEditor.PackageManager;
 using UnityEngine;
 
 public class CurveLibAuth : MonoBehaviour

@@ -131,8 +131,8 @@ public partial struct PickupAttractorSystem : ISystem
         [BurstCompile]
         public void Execute([EntityIndexInQuery] int sortkey, ref AttractedToPlayer attract, in LocalTransform transform, ref PhysicsVelocity velocity, in Entity entity)
         {
-            const float collectRadius = 1.8f;
-            const float speed = 5000f;
+            const float collectRadius = 1f;
+            const float speed = 35f;
             var t = attract.RampUpT;
             t += (Dt / attract.RampUpDuration);
             t = math.clamp(t, 0f, 1f);
@@ -143,7 +143,7 @@ public partial struct PickupAttractorSystem : ISystem
             if (math.lengthsq(dirToPlayer) < collectRadius)
                 ecb.DestroyEntity(sortkey, entity);
             else
-                 velocity.Linear = math.normalizesafe(dirToPlayer) * Dt * attract.Vel;
+                 velocity.Linear = math.normalizesafe(dirToPlayer) * attract.Vel;
         }
     }
 }

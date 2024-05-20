@@ -5,6 +5,7 @@ public class PickupAuth : MonoBehaviour
 {
     public PickupType PickupType;
     public int Value = 2;
+    public float PickupDistanceOverride;
 
     public class Baker : Baker<PickupAuth>
     {
@@ -15,6 +16,9 @@ public class PickupAuth : MonoBehaviour
             {
                 PickupType = authoring.PickupType,
                 Value = authoring.Value,
+                PickupDistanceOverrideSqr = authoring.PickupDistanceOverride * authoring.PickupDistanceOverride,
+                HasDistanceOverride = authoring.PickupDistanceOverride > 0.1f
+                
             });
         }
     }

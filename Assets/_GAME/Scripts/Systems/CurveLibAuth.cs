@@ -6,6 +6,7 @@ using UnityEngine;
 public class CurveLibAuth : MonoBehaviour
 {
     public CurveAuthWrapper RocketHeightCurve;
+    public CurveAuthWrapper XPPickupVelocityCurve;
     public CurveAuthWrapper PickupVelocityCurve;
 
     public class Baker : Baker<CurveLibAuth>
@@ -16,7 +17,9 @@ public class CurveLibAuth : MonoBehaviour
             AddComponent(ent, new CurveLib
             {
                 RocketHeightCurve = BakeCurve(authoring.RocketHeightCurve),
-                PickupVelocityCurve = BakeCurve(authoring.PickupVelocityCurve)
+                XPPickupVelocityCurve = BakeCurve(authoring.XPPickupVelocityCurve),
+                PickupVelocityCurve = BakeCurve(authoring.PickupVelocityCurve),
+
             });
         }
 

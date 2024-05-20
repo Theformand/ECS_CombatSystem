@@ -367,8 +367,12 @@ PrefabInstance:
       value: 350
       objectReference: {fileID: 0}
     - target: {fileID: 11496292, guid: 0abab5bb77339e4428787a870eb31bd3, type: 3}
+      propertyPath: m_graphModuleOffset.y
+      value: 260
+      objectReference: {fileID: 0}
+    - target: {fileID: 11496292, guid: 0abab5bb77339e4428787a870eb31bd3, type: 3}
       propertyPath: m_graphModulePosition
-      value: 1
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 22451668, guid: 0abab5bb77339e4428787a870eb31bd3, type: 3}
       propertyPath: m_Pivot.x
@@ -480,7 +484,7 @@ Transform:
   m_GameObject: {fileID: 850635803}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.20000076, y: 0.09, z: 7.700001}
+  m_LocalPosition: {x: 18.29, y: 0.09, z: 36.08}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -749,7 +753,7 @@ Transform:
   m_GameObject: {fileID: 1725285872}
   serializedVersion: 2
   m_LocalRotation: {x: -0.000000012890264, y: 0.86747116, z: -0.4974875, w: -0.000000022476812}
-  m_LocalPosition: {x: -0.20000076, y: 17.01, z: 17.6}
+  m_LocalPosition: {x: 18.29, y: 17.01, z: 45.980003}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:

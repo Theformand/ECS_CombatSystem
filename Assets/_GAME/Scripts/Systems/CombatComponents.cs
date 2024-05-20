@@ -7,6 +7,7 @@ using UnityEngine;
 public struct CurveLib : IComponentData
 {
     public DotsCurve RocketHeightCurve;
+    public DotsCurve XPPickupVelocityCurve;
     public DotsCurve PickupVelocityCurve;
 }
 
@@ -227,12 +228,15 @@ public struct Pickup : IComponentData
 {
     public PickupType PickupType;
     public int Value;
+    public float PickupDistanceOverrideSqr;
+    public bool HasDistanceOverride;
 }
 
 public enum PickupType
 {
     XP,
-    Mineral
+    Mineral,
+    Magnet
 }
 
 public enum SkillTargetingMode

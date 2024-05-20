@@ -4,7 +4,6 @@ using Unity.Entities;
 using Unity.Mathematics;
 using Unity.Physics;
 using Unity.Transforms;
-using UnityEngine;
 using static Utils;
 using Random = Unity.Mathematics.Random;
 
@@ -133,6 +132,7 @@ public partial struct ProjectileSkillSystem : ISystem
                 aimDir = referenceFwd;
             }
             
+            //TODO: if dt > shotInterval, do an extra loop to fire the missing bullets and shift their starting position accordingly so fire rate isnt limtied by framerate
             //float bulletTimer = 0f;
             //bulletTimer += dt;
             //float shotInterval = 1f / shotData.AttacksPerSecond;
@@ -143,8 +143,6 @@ public partial struct ProjectileSkillSystem : ISystem
             if (isReloaded && targetFound)
             {
                 //TODO: Figure out how to notify GO land that we need Audio here
-
-                //we are reloaded and we found a target
                 aimDir.y = 0;
                 for (int i = 0; i < skillData.NumBulletsPerAttack; i++)
                 {

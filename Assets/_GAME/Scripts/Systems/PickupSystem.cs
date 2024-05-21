@@ -8,7 +8,6 @@ using Unity.Transforms;
 using static PickupAttractorSystem;
 using Unity.Physics.Extensions;
 
-
 public struct PlayerPickupTrigger : IComponentData
 {
 

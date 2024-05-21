@@ -268,6 +268,20 @@ public enum DamageType
     ACID,
 }
 
+public struct SpawnVFXRequest : IComponentData
+{
+    public VFXPrefabType VFXPrefabType;
+    public float3 Pos;
+    public quaternion Rotation;
+    public float Scale;
+}
+
+
+public enum VFXPrefabType
+{
+    Grenade_Explosion_HE
+}
+
 public enum GrenadeExplosionType
 {
     Explosion,

@@ -4,8 +4,7 @@ using Unity.Transforms;
 using Unity.Physics;
 using Unity.Collections;
 using Unity.Mathematics;
-using UnityEngine;
-using static UnityEngine.EventSystems.EventTrigger;
+
 
 public partial struct GrenadeSkillSystem : ISystem
 {
@@ -17,8 +16,9 @@ public partial struct GrenadeSkillSystem : ISystem
     {
         entityQuery = state.GetEntityQuery(typeof(EnemyTag), typeof(LocalTransform));
         up = new float3(0f, 1f, 0f);
-
+        
     }
+
     public void OnDestroy(ref SystemState state) { }
 
     [BurstCompile]
@@ -81,6 +81,7 @@ public partial struct GrenadeSkillSystem : ISystem
     }
 }
 
+[UpdateInGroup(typeof(SkillSystemGroup))]
 public partial struct GrenadeLifeTimeSystem : ISystem
 {
     private ComponentLookup<EnemyTag> enemyLUT;
@@ -97,7 +98,10 @@ public partial struct GrenadeLifeTimeSystem : ISystem
         };
     }
 
-    public void OnDestroy(ref SystemState state) { }
+    public void OnDestroy(ref SystemState state) 
+    {
+        state.RequireForUpdate<VFXLibrary>();
+    }
 
     [BurstCompile]
     public void OnUpdate(ref SystemState state)
@@ -112,9 +116,10 @@ public partial struct GrenadeLifeTimeSystem : ISystem
             ref readonly var grenade = ref qgrenade.ValueRO;
             ref var grenadeW = ref qgrenade.ValueRW;
             grenadeW.LifeTime -= dt;
+            var pos = transform.Position;
 
             //cluster
-            if (grenade.Cluster && transform.Position.y < .98f || grenade.LifeTime <= 0f)
+            if (grenade.Cluster && (transform.Position.y < .98f || grenade.LifeTime <= 0f))
             {
                 var ent = ecb.CreateEntity();
                 ecb.AddComponent(ent, new SpawnClusterGrenades
@@ -131,10 +136,12 @@ public partial struct GrenadeLifeTimeSystem : ISystem
 
             if (grenade.LifeTime <= 0f)
             {
+                var rot = quaternion.identity;
                 switch (grenade.GrenadeSettings.ExplosionType)
                 {
                     case GrenadeExplosionType.Explosion:
                         Explode(ref grenadeW, transform.Position, ref hits, ref filter, ref ecb, ref physics);
+                        Utils.SpawnVFX(VFXPrefabType.Grenade_Explosion_HE, ref pos, ref rot, 1f, ref ecb);
                         ecb.DestroyEntity(entity);
                         break;
                     case GrenadeExplosionType.SpinningBullets:
@@ -152,7 +159,7 @@ public partial struct GrenadeLifeTimeSystem : ISystem
         hits.Dispose();
     }
 
-    public partial struct System : ISystem
+    public partial struct SpawnClusterGrenadeSystem : ISystem
     {
         private Unity.Mathematics.Random rng;
 
@@ -187,9 +194,9 @@ public partial struct GrenadeLifeTimeSystem : ISystem
 
                     var grenade = ecb.Instantiate(cluster.GrenadePrefab);
                     float scalar = .3f;
-                    dir.x *= settings.ThrowForce * scalar;
-                    dir.z *= settings.ThrowForce * scalar;
-                    dir.y = 5f;
+                    dir.x *= settings.ThrowForce * scalar + rng.NextFloat(0f, 2f);
+                    dir.z *= settings.ThrowForce * scalar + rng.NextFloat(0f, 2f);
+                    dir.y = 5f + rng.NextFloat(0f, 2f);
                     var newSettings = new GrenadeSettings()
                     {
                         Cluster = false,

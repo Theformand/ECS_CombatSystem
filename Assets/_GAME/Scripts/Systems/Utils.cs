@@ -4,6 +4,7 @@ using Unity.Transforms;
 using Unity.Physics;
 using Unity.Collections;
 using Unity.Mathematics;
+using UnityEngine;
 
 [BurstCompile]
 public class Utils
@@ -31,6 +32,20 @@ public class Utils
                 Pierce = data.Pierce,
             };
         }
+    }
+
+
+    [BurstCompile]
+    public static void SpawnVFX(VFXPrefabType vFXPrefabType, ref float3 position, ref quaternion rotation, float scale, ref EntityCommandBuffer ecb)
+    {
+        var marker = ecb.CreateEntity();
+        ecb.AddComponent(marker, new SpawnVFXRequest
+        {
+            Pos = position,
+            Rotation = rotation,
+            Scale = scale,
+            VFXPrefabType = vFXPrefabType
+        });
     }
 
     [BurstCompile]

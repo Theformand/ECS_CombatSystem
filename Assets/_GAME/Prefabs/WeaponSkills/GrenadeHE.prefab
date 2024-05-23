@@ -15,7 +15,7 @@ GameObject:
   - component: {fileID: 1688035672495194754}
   - component: {fileID: 7330054189380336710}
   m_Layer: 0
-  m_Name: GrenadePrefab
+  m_Name: GrenadeHE
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

@@ -1,7 +1,7 @@
-using System;
 using Unity.Entities;
 using Unity.Properties;
 using UnityEngine;
+using System;
 
 namespace AutoAuthoring
 {

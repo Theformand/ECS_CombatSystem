@@ -9,6 +9,8 @@ public struct CurveLib : IComponentData
     public DotsCurve RocketHeightCurve;
     public DotsCurve XPPickupVelocityCurve;
     public DotsCurve PickupVelocityCurve;
+    public DotsCurve BlockMiningTween;
+    public DotsCurve BlockMiningTween_Driller;
 }
 
 [Serializable]
@@ -222,6 +224,8 @@ public struct Player : IComponentData
 {
     public int Health;
     public float PickupDistance;
+    public float MiningInterval;
+    public float TimestampLastMine;
 }
 
 public struct Pickup : IComponentData

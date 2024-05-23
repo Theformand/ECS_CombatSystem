@@ -2,15 +2,16 @@ using System.Runtime.CompilerServices;
 using Unity.Burst;
 using Unity.Collections;
 using Unity.Entities;
-using Unity.Entities.UniversalDelegates;
 using Unity.Mathematics;
 using Unity.Transforms;
 
 public struct SpawnerData : IComponentData
 {
-    public bool Singleton;
     public int InstanceCount;
     public Entity Prefab;
+    public float Scale;
+    public bool RandomRot;
+    public float SparsityScalar;
 }
 
 public partial struct SpawnerSystem : ISystem
@@ -22,7 +23,7 @@ public partial struct SpawnerSystem : ISystem
     //[BurstCompile]
     void OnUpdate(ref SystemState state)
     {
-       
+
         var buffer = SystemAPI.GetSingleton<BeginSimulationEntityCommandBufferSystem.Singleton>().CreateCommandBuffer(state.WorldUnmanaged).AsParallelWriter();
         state.Dependency = new SpawnJob()
         {
@@ -34,7 +35,7 @@ public partial struct SpawnerSystem : ISystem
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static quaternion RandomRot(Unity.Mathematics.Random rng)
+    public static quaternion RandomRot(Random rng)
     {
         return quaternion.Euler(new float3(rng.NextFloat(-1f, 1f), rng.NextFloat(-1f, 1f), rng.NextFloat(-1f, 1f)));
     }
@@ -44,23 +45,24 @@ public partial struct SpawnerSystem : ISystem
     {
         [ReadOnly] public int BaseSeed;
         public EntityCommandBuffer.ParallelWriter buffer;
-        [BurstCompile] 
+        [BurstCompile]
         private void Execute([ChunkIndexInQuery] int chunkIndex, in SpawnerData data, in Entity entity)
         {
-            if (data.Singleton)
+            var seed = (uint)(BaseSeed + chunkIndex);
+            var rng = new Random((uint)((chunkIndex + 1) * seed) + 1);
+            for (int i = 0; i < data.InstanceCount; i++)
             {
-                var seed = (uint)(BaseSeed + chunkIndex);
-                var rng = new Unity.Mathematics.Random((uint)((chunkIndex + 1) * seed) + 1);
-                for (int i = 0; i < data.InstanceCount; i++)
-                {
-                    const float radius = 30f;
-                    var pos = new float3(rng.NextFloat(-1f, 1f), rng.NextFloat(-1f, 1f), rng.NextFloat(-1f, 1f)) * rng.NextFloat(0f, radius);
-                    pos.y = 1f;
-                    var ent = buffer.Instantiate(chunkIndex, data.Prefab);
-                    buffer.SetComponent(chunkIndex, ent, new LocalTransform() { Position = pos , Rotation = RandomRot(rng), Scale = 0.25f});
-                }
-                buffer.DestroyEntity(chunkIndex, entity);
+                float radius = 30f * data.SparsityScalar;
+                var pos = new float3(rng.NextFloat(-1f, 1f), rng.NextFloat(-1f, 1f), rng.NextFloat(-1f, 1f)) * rng.NextFloat(0f, radius);
+                pos.y = 0f;
+                var ent = buffer.Instantiate(chunkIndex, data.Prefab);
+                var rot = quaternion.identity;
+                if (data.RandomRot)
+                    rot = RandomRot(rng);
+
+                buffer.SetComponent(chunkIndex, ent, new LocalTransform() { Position = pos, Rotation = rot, Scale = data.Scale });
             }
+            buffer.DestroyEntity(chunkIndex, entity);
         }
     }
 }

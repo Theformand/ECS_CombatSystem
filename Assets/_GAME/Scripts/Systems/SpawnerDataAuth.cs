@@ -10,8 +10,10 @@ public class SpawnerAuth : MonoBehaviour
 public class SpawnInfo
 {
     public GameObject Prefab;
-    public bool Singleton;
     public int InstanceCount;
+    public bool RandomRot;
+    public float Scale = 1f;
+    public float SparsityScalar = 1f;
 }
 
 public class SpawnerBaker : Baker<SpawnerAuth>
@@ -22,8 +24,10 @@ public class SpawnerBaker : Baker<SpawnerAuth>
         {
             SpawnerData sd = default;
             sd.Prefab = GetEntity(spawnInfo.Prefab, TransformUsageFlags.Dynamic);
-            sd.Singleton = spawnInfo.Singleton;
             sd.InstanceCount = spawnInfo.InstanceCount;
+            sd.RandomRot = spawnInfo.RandomRot;
+            sd.Scale = spawnInfo.Scale;
+            sd.SparsityScalar = spawnInfo.SparsityScalar;
             var ent = CreateAdditionalEntity(TransformUsageFlags.Dynamic, false, spawnInfo.Prefab.name);
             AddComponent(ent, sd);
         }

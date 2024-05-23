@@ -8,6 +8,7 @@ public class CurveLibAuth : MonoBehaviour
     public CurveAuthWrapper RocketHeightCurve;
     public CurveAuthWrapper XPPickupVelocityCurve;
     public CurveAuthWrapper PickupVelocityCurve;
+    public CurveAuthWrapper RockMiningCurve;
 
     public class Baker : Baker<CurveLibAuth>
     {
@@ -19,7 +20,7 @@ public class CurveLibAuth : MonoBehaviour
                 RocketHeightCurve = BakeCurve(authoring.RocketHeightCurve),
                 XPPickupVelocityCurve = BakeCurve(authoring.XPPickupVelocityCurve),
                 PickupVelocityCurve = BakeCurve(authoring.PickupVelocityCurve),
-
+                BlockMiningTween = BakeCurve(authoring.RockMiningCurve)
             });
         }
 
@@ -46,5 +47,5 @@ public class CurveLibAuth : MonoBehaviour
 public class CurveAuthWrapper
 {
     public AnimationCurve Curve;
-    public int NumSamples;
+    public int NumSamples = 128;
 }

@@ -12,6 +12,8 @@ public struct SpawnerData : IComponentData
     public float Scale;
     public bool RandomRot;
     public float SparsityScalar;
+
+    public SpawnPlacementMode PlacementMode { get; internal set; }
 }
 
 public partial struct SpawnerSystem : ISystem
@@ -46,23 +48,29 @@ public partial struct SpawnerSystem : ISystem
         [ReadOnly] public int BaseSeed;
         public EntityCommandBuffer.ParallelWriter buffer;
         [BurstCompile]
-        private void Execute([ChunkIndexInQuery] int chunkIndex, in SpawnerData data, in Entity entity)
+        private void Execute([EntityIndexInQuery] int entIdx, in SpawnerData data, in Entity entity)
         {
-            var seed = (uint)(BaseSeed + chunkIndex);
-            var rng = new Random((uint)((chunkIndex + 1) * seed) + 1);
+            var seed = (uint)(BaseSeed + entIdx);
+            var rng = new Random((uint)((entIdx + 1) * seed) + 1);
+
             for (int i = 0; i < data.InstanceCount; i++)
             {
-                float radius = 30f * data.SparsityScalar;
-                var pos = new float3(rng.NextFloat(-1f, 1f), rng.NextFloat(-1f, 1f), rng.NextFloat(-1f, 1f)) * rng.NextFloat(0f, radius);
+                float3 pos = float3.zero;
+                if (data.PlacementMode == SpawnPlacementMode.Disc)
+                {
+                    float radius = 30f * data.SparsityScalar;
+                    pos = new float3(rng.NextFloat(-1f, 1f), rng.NextFloat(-1f, 1f), rng.NextFloat(-1f, 1f)) * rng.NextFloat(0f, radius);
+                }
+                
                 pos.y = 0f;
-                var ent = buffer.Instantiate(chunkIndex, data.Prefab);
+                var ent = buffer.Instantiate(entIdx, data.Prefab);
                 var rot = quaternion.identity;
                 if (data.RandomRot)
                     rot = RandomRot(rng);
 
-                buffer.SetComponent(chunkIndex, ent, new LocalTransform() { Position = pos, Rotation = rot, Scale = data.Scale });
+                buffer.SetComponent(entIdx, ent, new LocalTransform() { Position = pos, Rotation = rot, Scale = data.Scale });
             }
-            buffer.DestroyEntity(chunkIndex, entity);
+            buffer.DestroyEntity(entIdx, entity);
         }
     }
 }

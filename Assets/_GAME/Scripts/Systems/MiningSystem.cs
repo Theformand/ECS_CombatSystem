@@ -4,10 +4,12 @@ using Unity.Entities;
 using Unity.Mathematics;
 using Unity.Physics;
 using Unity.Transforms;
+using UnityEngine;
+using Random = Unity.Mathematics.Random;
 
 public struct MineableBlock : IComponentData
 {
-    public LocalTransform GFXContainer;
+    public Entity GFXContainer;
     public bool HasMinerals;
     public MineralType MineralType;
     public int Health;
@@ -29,8 +31,8 @@ public partial struct MiningSystem : ISystem
     {
         miningFilter = new CollisionFilter
         {
-            BelongsTo = 0,
-            CollidesWith = 1,
+            BelongsTo = ~0u,
+            CollidesWith = 1u << 8,
             GroupIndex = 0,
         };
         random = new Random();
@@ -42,40 +44,53 @@ public partial struct MiningSystem : ISystem
     [BurstCompile]
     public void OnUpdate(ref SystemState state)
     {
-        var player = SystemAPI.GetSingleton<Player>();
+        var player = SystemAPI.GetSingletonRW<Player>();
         var playerEnt = SystemAPI.GetSingletonEntity<Player>();
-        var playerPos = SystemAPI.GetComponent<LocalTransform>(playerEnt).Position;
+        var playerTransform = SystemAPI.GetComponent<LocalTransform>(playerEnt);
         var ecb = new EntityCommandBuffer(Allocator.Temp);
         var physics = SystemAPI.GetSingleton<PhysicsWorldSingleton>();
-
+        Debug.DrawLine(playerTransform.Position, playerTransform.Position + playerTransform.Forward());
         var time = (float)SystemAPI.Time.ElapsedTime;
-        if (time > player.TimestampLastMine)
+        if (time > player.ValueRO.TimestampLastMine + player.ValueRO.MiningInterval)
         {
             var hits = new NativeList<DistanceHit>(Allocator.Temp);
-            physics.OverlapSphere(playerPos, 3f, ref hits, miningFilter);
+            physics.OverlapSphere(playerTransform.Position + playerTransform.Forward(), 1f, ref hits, miningFilter);
             for (int i = 0; i < hits.Length; i++)
             {
-                var ent = hits[i].Entity;
-                var block = SystemAPI.GetComponent<MineableBlock>(ent);
-
-                var tween = new BlockMiningTween
-                {
-                    Duration = 2f,
-                    Power = 2f,
-                    T = 0f,
-                };
-                tween.SetAsymmetryXZ(ref random, 1f);
-                ecb.AddComponent(ent, tween);
+                var ent =  hits[i].Entity;
+                ref var blockW = ref SystemAPI.GetComponentRW<MineableBlock>(ent).ValueRW;
+                var gfxContainerEnt = blockW.GFXContainer;
 
                 //TODO: Notify Minimap
-                block.Health -= 10;
-                if (block.Health <= 0)
+                blockW.Health -= 20;
+                if (blockW.Health <= 0)
                 {
                     //Death VFX
+                    //Spawn any loot here
                     ecb.DestroyEntity(ent);
                 }
+                else
+                {
+                    if (SystemAPI.HasComponent<BlockMiningTween>(gfxContainerEnt))
+                    {
+                        var tween = SystemAPI.GetComponentRW<BlockMiningTween>(gfxContainerEnt);
+                        tween.ValueRW.T = 0f;
+                        tween.ValueRW.Duration = math.min(player.ValueRO.MiningInterval, 0.35f);
+                    }
+                    else
+                    {
+                        var tween = new BlockMiningTween
+                        {
+                            Duration = math.min(player.ValueRO.MiningInterval, 0.35f),
+                            Power = 2f,
+                            T = 0f,
+                        };
+                        tween.SetAsymmetryXZ(ref random, 2f);
+                        ecb.AddComponent(gfxContainerEnt, tween);
+                    }
+                }
             }
-
+            player.ValueRW.TimestampLastMine = time;
             ecb.Playback(state.EntityManager);
         }
     }
@@ -134,7 +149,7 @@ public partial struct BlockMiningTween : IComponentData
             var curveLib = SystemAPI.GetSingleton<CurveLib>();
             var curve = curveLib.BlockMiningTween;
             var ecb = new EntityCommandBuffer(Allocator.Temp);
-            foreach (var (tween, matrix, entity) in SystemAPI.Query<RefRW<BlockMiningTween>, RefRW<PostTransformMatrix>>().WithAll<MineableBlock>().WithEntityAccess())
+            foreach (var (tween, matrix, entity) in SystemAPI.Query<RefRW<BlockMiningTween>, RefRW<PostTransformMatrix>>().WithEntityAccess())
             {
                 var t = tween.ValueRO.T;
                 var eval = curve.GetValueAtFrac(t);

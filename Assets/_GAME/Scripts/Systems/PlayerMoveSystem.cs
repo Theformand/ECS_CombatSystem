@@ -5,6 +5,7 @@ using Unity.Transforms;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using Unity.Cinemachine;
+using Unity.Physics;
 
 public partial class InputSystem : SystemBase
 {
@@ -42,7 +43,7 @@ public struct InputData : IComponentData
     public quaternion camRotation;
 }
 
-
+[UpdateInGroup(typeof(FixedStepSimulationSystemGroup))]
 public partial struct PlayerMoveSystem : ISystem
 {
     private float3 dir3d;
@@ -62,12 +63,14 @@ public partial struct PlayerMoveSystem : ISystem
     {
         var dt = SystemAPI.Time.DeltaTime;
         var inputData = SystemAPI.GetSingletonRW<InputData>();
-        foreach (var (_, transform) in SystemAPI.Query<Player, RefRW<LocalTransform>>())
+        foreach (var (player, transform, vel) in SystemAPI.Query<Player,RefRW<LocalTransform>, RefRW<PhysicsVelocity>>())
         {
-            var dir2d = inputData.ValueRO.MoveDir;
+
+            var dir2d =  inputData.ValueRO.MoveDir;
             dir3d.xz = dir2d;
             float3 camDir = math.mul(inputData.ValueRO.camRotation, dir3d);
             dir3d.xz = camDir.xy;
+            dir3d = math.normalizesafe(dir3d);
             var dir = math.normalizesafe(dir3d);
             if (math.length(dir2d) > 0.5f)
                 lastMoveDir = math.normalize(dir);
@@ -76,7 +79,11 @@ public partial struct PlayerMoveSystem : ISystem
             if (dir.Equals(float3.zero))
                 targetRot = transform.ValueRO.Rotation;
 
-            transform.ValueRW.Position += dt * 6f * dir3d;
+            float3 move = dt * player.BaseMoveSpeedScalar * dir3d;
+            move.y = 0f;
+            vel.ValueRW.Linear = move;
+            vel.ValueRW.Angular = float3.zero;
+            transform.ValueRW.Position.y = 0f;
             transform.ValueRW.Rotation = math.nlerp(transform.ValueRO.Rotation, targetRot, dt * 20f);
         }
     }

@@ -14,26 +14,12 @@ public class MineableBlockAuth : MonoBehaviour
         {
             var rng = new Unity.Mathematics.Random();
             rng.InitState();
-            var ent = GetEntity(TransformUsageFlags.NonUniformScale | TransformUsageFlags.Dynamic);
+            var ent = GetEntity(TransformUsageFlags.Dynamic);
             AddComponent(ent, new MineableBlock
             {
                 Health = authoring.Health,
                 MaxHealth = authoring.Health,
-                //GFXContainer = authoring.GFXContainer,
-                
-            });
-            var tween = new BlockMiningTween
-            {
-                Duration = 0.35f,
-                Power = 2f,
-                T = 0f,
-                CycleMode = TweenCycleMode.Loop
-            };
-            tween.SetAsymmetryXZ(ref rng, 2f);
-            AddComponent(ent, tween);
-            AddComponent(ent, new PostTransformMatrix
-            {
-                Value = float4x4.identity,
+                GFXContainer = GetEntity(authoring.GFXContainer, TransformUsageFlags.NonUniformScale | TransformUsageFlags.Dynamic )
             });
         }
     }

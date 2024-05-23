@@ -223,6 +223,7 @@ public struct GrenadeData : IComponentData
 public struct Player : IComponentData
 {
     public int Health;
+    public float BaseMoveSpeedScalar;
     public float PickupDistance;
     public float MiningInterval;
     public float TimestampLastMine;

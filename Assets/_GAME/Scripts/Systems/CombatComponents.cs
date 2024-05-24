@@ -11,6 +11,7 @@ public struct CurveLib : IComponentData
     public DotsCurve PickupVelocityCurve;
     public DotsCurve BlockMiningTween;
     public DotsCurve BlockMiningTween_Driller;
+    public DotsCurve KnockbackCurve;
 }
 
 [Serializable]
@@ -30,7 +31,12 @@ public struct HitInfo : IBufferElementData
 public struct DotsCurve : IComponentData
 {
     public BlobAssetReference<DiscretizedCurve> BlobRef;
-    public readonly float GetValueAtFrac(float time) => BlobRef.Value.GetValueAtFrac(time);
+    /// <summary>
+    /// Evalute curve from 0-1
+    /// </summary>
+    /// <param name="time"></param>
+    /// <returns></returns>
+    public readonly float Evaluate(float time) => BlobRef.Value.Evaluate(time);
 }
 
 public struct DiscretizedCurve
@@ -38,7 +44,7 @@ public struct DiscretizedCurve
     public BlobArray<float> Points;
     public int NumSamples;
 
-    public float GetValueAtFrac(float time)
+    public float Evaluate(float time)
     {
         var approxIdx = (NumSamples - 1) * time;
         var prevIdx = (int)math.floor(approxIdx);
@@ -226,6 +232,7 @@ public struct Player : IComponentData
     public float BaseMoveSpeedScalar;
     public float PickupDistance;
     public float MiningInterval;
+    public int MiningDamage;
     public float TimestampLastMine;
 }
 

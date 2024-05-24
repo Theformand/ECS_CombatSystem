@@ -234,7 +234,7 @@ public partial struct PickupAttractorSystem : ISystem
             t += (Dt / attract.RampUpDuration);
             t = math.clamp(t, 0f, 1f);
             var curve = attract.IsXP ? XPAttractSpeedCurve : AttractSpeedCurve;
-            attract.Vel = curve.GetValueAtFrac(t) * speed;
+            attract.Vel = curve.Evaluate(t) * speed;
             attract.RampUpT = t;
             var dirToPlayer = PlayerPos - transform.Position;
 

@@ -7,6 +7,7 @@ using UnityEngine.InputSystem;
 using Unity.Cinemachine;
 using Unity.Physics;
 
+[UpdateInGroup(typeof(InitializationSystemGroup))]
 public partial class InputSystem : SystemBase
 {
     private InputAction moveInputAction;
@@ -76,6 +77,10 @@ public partial struct PlayerMoveSystem : ISystem
                 lastMoveDir = math.normalize(dir);
 
             var targetRot = quaternion.LookRotation(lastMoveDir, up);
+            var eul = math.Euler(targetRot);
+            eul.z = 0f;
+            eul.x = 0f;
+            targetRot = quaternion.Euler(eul);
             if (dir.Equals(float3.zero))
                 targetRot = transform.ValueRO.Rotation;
 

@@ -59,10 +59,11 @@ public partial struct MiningSystem : ISystem
             {
                 var ent =  hits[i].Entity;
                 ref var blockW = ref SystemAPI.GetComponentRW<MineableBlock>(ent).ValueRW;
-                var gfxContainerEnt = blockW.GFXContainer;
+                ref readonly var block = ref SystemAPI.GetComponentRO<MineableBlock>(ent).ValueRO;
+                var gfxContainerEnt = block.GFXContainer;
 
                 //TODO: Notify Minimap
-                blockW.Health -= 20;
+                blockW.Health -= player.ValueRO.MiningDamage;
                 if (blockW.Health <= 0)
                 {
                     //Death VFX
@@ -152,7 +153,7 @@ public partial struct BlockMiningTween : IComponentData
             foreach (var (tween, matrix, entity) in SystemAPI.Query<RefRW<BlockMiningTween>, RefRW<PostTransformMatrix>>().WithEntityAccess())
             {
                 var t = tween.ValueRO.T;
-                var eval = curve.GetValueAtFrac(t);
+                var eval = curve.Evaluate(t);
                 var mat = matrix.ValueRW.Value;
                 float xAsym = tween.ValueRO.XScaleOffset;
                 float zAsym = tween.ValueRO.ZScaleOffset;

@@ -14,6 +14,7 @@ public class SpawnInfo
     public bool RandomRot;
     public float Scale = 1f;
     public float SparsityScalar = 1f;
+    public float YOffset = 1f;
     public SpawnPlacementMode PlacementMode = SpawnPlacementMode.Disc;
 }
 
@@ -36,6 +37,7 @@ public class SpawnerBaker : Baker<SpawnerAuth>
             sd.Scale = spawnInfo.Scale;
             sd.SparsityScalar = spawnInfo.SparsityScalar;
             sd.PlacementMode = spawnInfo.PlacementMode;
+            sd.YOffset = spawnInfo.YOffset;
             var ent = CreateAdditionalEntity(TransformUsageFlags.Dynamic, false, spawnInfo.Prefab.name);
             AddComponent(ent, sd);
         }

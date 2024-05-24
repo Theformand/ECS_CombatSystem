@@ -12,6 +12,7 @@ public struct SpawnerData : IComponentData
     public float Scale;
     public bool RandomRot;
     public float SparsityScalar;
+    public float YOffset;
 
     public SpawnPlacementMode PlacementMode { get; internal set; }
 }
@@ -62,7 +63,7 @@ public partial struct SpawnerSystem : ISystem
                     pos = new float3(rng.NextFloat(-1f, 1f), rng.NextFloat(-1f, 1f), rng.NextFloat(-1f, 1f)) * rng.NextFloat(0f, radius);
                 }
                 
-                pos.y = 0f;
+                pos.y = data.YOffset;
                 var ent = buffer.Instantiate(entIdx, data.Prefab);
                 var rot = quaternion.identity;
                 if (data.RandomRot)

@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 
 public class SetFPS : MonoBehaviour
@@ -8,8 +9,9 @@ public class SetFPS : MonoBehaviour
         
     }
 
-    private void Start()
+    private IEnumerator Start()
     {
+        yield return new WaitForSeconds(.1f);
         Application.targetFrameRate = FPS;
     }
 }

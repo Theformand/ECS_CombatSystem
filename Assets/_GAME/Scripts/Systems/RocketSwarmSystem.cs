@@ -100,7 +100,7 @@ public partial struct RocketSwarmSystem : ISystem
                 rocketW.RocketSettings.Destination = qr.ValueRO.TargetTransform.Position;
 
             var settings = rocket.RocketSettings;
-            var curveEval = rocketCurve.GetValueAtFrac(qr.ValueRO.T);
+            var curveEval = rocketCurve.Evaluate(qr.ValueRO.T);
             var height =  curveEval * settings.ApexHeight;
             var pos = transform.ValueRO.Position;
             var lastPos = pos;

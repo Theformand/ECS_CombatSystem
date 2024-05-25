@@ -367,6 +367,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cb39af9d61a8740438d7e057d23863a7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  collider: {fileID: 1593150532}
   filter: {fileID: 1593150531}
 --- !u!4 &373606646
 Transform:

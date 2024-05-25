@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class BridgeTester : MonoBehaviour
 {
-
+    public MeshCollider collider;
     public MeshFilter filter;
     private IEnumerator Start()
     {
@@ -14,7 +14,7 @@ public class BridgeTester : MonoBehaviour
             Width = 0,
             HoleLayer = new int[] { 0 },
             Layer = new int[] { 0 },
-            GroundMesh = filter.mesh
+            GroundMesh = collider.sharedMesh
         };
 
         ToEntities.SendMapData(data);

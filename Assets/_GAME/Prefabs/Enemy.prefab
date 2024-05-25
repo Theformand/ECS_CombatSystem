@@ -95,9 +95,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1233951240929751519}
+  - component: {fileID: -7914631141766950976}
   - component: {fileID: 3852242956575557842}
   - component: {fileID: 8781699463549108239}
-  - component: {fileID: -7914631141766950976}
   m_Layer: 0
   m_Name: Enemy
   m_TagString: Untagged
@@ -121,6 +121,22 @@ Transform:
   - {fileID: 1915468364865709529}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &-7914631141766950976
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9024142773675701311}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e579c831d972f9445a43f9461e7228c4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  MoveSpeed: 1.66
+  TurnSpeed: 2.08
+  AttackRange: 1
+  AttackInterval: 0.5
 --- !u!114 &3852242956575557842
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -315,22 +331,3 @@ MonoBehaviour:
     Tag05: 0
     Tag06: 0
     Tag07: 0
---- !u!114 &-7914631141766950976
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 9024142773675701311}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e579c831d972f9445a43f9461e7228c4, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  InfoArray:
-    ComponentArray:
-    - AuthoringData:
-        HPMax: 10
-        HPCurrent: 10
-        PierceCost: 1
-      References: []

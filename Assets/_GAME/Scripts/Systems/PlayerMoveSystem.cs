@@ -7,17 +7,21 @@ using UnityEngine.InputSystem;
 using Unity.Cinemachine;
 using Unity.Physics;
 
+
 [UpdateInGroup(typeof(InitializationSystemGroup))]
 public partial class InputSystem : SystemBase
 {
     private InputAction moveInputAction;
     private UnityObjectRef<Transform> cam;
+
+
     protected override void OnCreate()
     {
         base.OnCreate();
         EntityManager.CreateSingleton<InputData>();
         SetupPlayerInput();
     }
+
     private void SetupPlayerInput()
     {
         var playerInputActionMap = new InputActionMap();
@@ -64,10 +68,10 @@ public partial struct PlayerMoveSystem : ISystem
     {
         var dt = SystemAPI.Time.DeltaTime;
         var inputData = SystemAPI.GetSingletonRW<InputData>();
-        foreach (var (player, transform, vel) in SystemAPI.Query<Player,RefRW<LocalTransform>, RefRW<PhysicsVelocity>>())
+        foreach (var (player, transform, vel) in SystemAPI.Query<Player, RefRW<LocalTransform>, RefRW<PhysicsVelocity>>())
         {
 
-            var dir2d =  inputData.ValueRO.MoveDir;
+            var dir2d = inputData.ValueRO.MoveDir;
             dir3d.xz = dir2d;
             float3 camDir = math.mul(inputData.ValueRO.camRotation, dir3d);
             dir3d.xz = camDir.xy;
@@ -116,7 +120,7 @@ public partial class CameraFollowSystem : SystemBase
         }
 
 
-        foreach (var(_,transform) in SystemAPI.Query<Player,LocalTransform>())
+        foreach (var (_, transform) in SystemAPI.Query<Player, LocalTransform>())
         {
             target.position = transform.Position;
         }

@@ -8,12 +8,12 @@ using Unity.Transforms;
 [UpdateInGroup(typeof(SkillSystemGroup))]
 public partial struct BeamSkillSystem : ISystem
 {
-    private ComponentLookup<EnemyTag> enemyLUT;
+    private ComponentLookup<Enemy> enemyLUT;
 
     public void OnCreate(ref SystemState state)
     {
         state.RequireForUpdate<Player>();
-        enemyLUT = state.GetComponentLookup<EnemyTag>(true);
+        enemyLUT = state.GetComponentLookup<Enemy>(true);
     }
 
     public void OnDestroy(ref SystemState state) { }

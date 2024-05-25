@@ -16,7 +16,7 @@ public class EnemyAuth : MonoBehaviour
         public override void Bake(EnemyAuth authoring)
         {
             var ent = GetEntity(TransformUsageFlags.Dynamic);
-            AddComponent(ent, new EnemyTag
+            AddComponent(ent, new Enemy
             {
                 HPCurrent = 100,
                 HPMax = 100,

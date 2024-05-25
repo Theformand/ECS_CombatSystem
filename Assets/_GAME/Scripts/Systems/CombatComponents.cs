@@ -84,7 +84,7 @@ public struct DamageData : IComponentData
 }
 
 [Serializable]
-public struct EnemyTag : IComponentData
+public struct Enemy : IComponentData
 {
     public int HPMax;
     public int HPCurrent;

@@ -45,23 +45,28 @@ public partial class MapSystem : SystemBase
             // Create Ground Collider
             var groundColliderEnt = EntityManager.CreateEntity();
             Mesh mesh = data.GroundMesh.Value;
-            NativeArray<BlobAssetReference<Collider>> BlobCollider = new NativeArray<BlobAssetReference<Unity.Physics.Collider>>(1, Allocator.TempJob);
+            NativeArray<BlobAssetReference<Collider>> BlobCollider = new NativeArray<BlobAssetReference<Collider>>(1, Allocator.TempJob);
             NativeArray<float3> nativeVerts = new NativeArray<Vector3>(mesh.vertices, Allocator.TempJob).Reinterpret<float3>();
             NativeArray<int> nativeTris = new(mesh.triangles, Allocator.TempJob);
 
             CreateMeshColliderJob createMeshJob = new CreateMeshColliderJob { MeshVerts = nativeVerts, MeshTris = nativeTris, BlobCollider = BlobCollider };
             createMeshJob.Run();
 
+            ecb.AddSharedComponent(groundColliderEnt, new PhysicsWorldIndex
+            {
+                Value = 0
+            });
             ecb.AddComponent(groundColliderEnt, LocalTransform.FromPositionRotationScale(new float3(0f, 1f, 0f), quaternion.identity, 1f));
             var col = new PhysicsCollider { Value = BlobCollider[0] };
             ecb.AddComponent(groundColliderEnt, col);
             ecb.AddComponent(groundColliderEnt, new GroundColliderGizmo { Collider = col });
+
             nativeVerts.Dispose();
             nativeTris.Dispose();
             BlobCollider.Dispose();
 
 
-            // Delete the request component, so we essentially stop executing this query when generation is done
+            // Delete the request component, so we stop executing this query when generation is done
             ecb.RemoveComponent<GenerateMapRequest>(requestEntity);
 
         }

@@ -27,7 +27,7 @@ public partial struct SeekerEnemySystem : ISystem
     {
         var dt = SystemAPI.Time.DeltaTime;
         var playerTransform = SystemAPI.GetComponent<LocalTransform>(SystemAPI.GetSingletonEntity<Player>());
-        foreach (var (qEnemy, move, t) in SystemAPI.Query<RefRW<EnemyTag>, EnemyMoveData, RefRW<LocalTransform>>().WithNone<KnockBack>())
+        foreach (var (qEnemy, move, t) in SystemAPI.Query<RefRW<Enemy>, EnemyMoveData, RefRW<LocalTransform>>().WithNone<KnockBack>())
         {
 
             ref readonly var enemy = ref qEnemy.ValueRO;
@@ -71,7 +71,7 @@ public partial struct MeleeEnemySystem : ISystem
         var playerTransform = SystemAPI.GetComponent<LocalTransform>(player);
         var time = (float)SystemAPI.Time.ElapsedTime;
 
-        foreach (var (msd, transform) in SystemAPI.Query<RefRW<MeleeSkillData>, LocalTransform>().WithAll<EnemyTag>())
+        foreach (var (msd, transform) in SystemAPI.Query<RefRW<MeleeSkillData>, LocalTransform>().WithAll<Enemy>())
         {
             ref readonly var skillData = ref msd.ValueRO;
             ref var skillDataW = ref msd.ValueRW;

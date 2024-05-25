@@ -16,7 +16,7 @@ public partial struct ProjectileSkillSystem : ISystem
     public void OnCreate(ref SystemState state)
     {
         state.RequireForUpdate<Player>();
-        entityQuery = state.GetEntityQuery(typeof(EnemyTag), typeof(LocalTransform));
+        entityQuery = state.GetEntityQuery(typeof(Enemy), typeof(LocalTransform));
         rng = new Random();
         rng.InitState();
     }
@@ -33,14 +33,13 @@ public partial struct ProjectileSkillSystem : ISystem
         var playerEnt = SystemAPI.GetSingletonEntity<Player>();
         var playerTransform = SystemAPI.GetComponent<LocalTransform>(playerEnt);
 
-        var playerRot = playerTransform.Rotation;
         var playerFwd = playerTransform.Forward();
         float3 playerPos = playerTransform.Position;
       
         var time = (float)SystemAPI.Time.ElapsedTime;
         var dt = SystemAPI.Time.DeltaTime;
         NativeArray<LocalTransform> allTransforms = entityQuery.ToComponentDataArray<LocalTransform>(Allocator.Temp);
-        NativeArray<EnemyTag> allEnemies = entityQuery.ToComponentDataArray<EnemyTag>(Allocator.Temp);
+        NativeArray<Enemy> allEnemies = entityQuery.ToComponentDataArray<Enemy>(Allocator.Temp);
 
         foreach (var (qSkilldata, qRl, activationData) in SystemAPI.Query<RefRW<BulletSkillData>, RefRW<SkillReloadData>, SkillActivationData>())
         {

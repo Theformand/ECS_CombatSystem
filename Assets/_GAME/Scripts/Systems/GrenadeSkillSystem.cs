@@ -14,7 +14,7 @@ public partial struct GrenadeSkillSystem : ISystem
 
     public void OnCreate(ref SystemState state)
     {
-        entityQuery = state.GetEntityQuery(typeof(EnemyTag), typeof(LocalTransform));
+        entityQuery = state.GetEntityQuery(typeof(Enemy), typeof(LocalTransform));
         up = new float3(0f, 1f, 0f);
         
     }
@@ -84,12 +84,12 @@ public partial struct GrenadeSkillSystem : ISystem
 [UpdateInGroup(typeof(SkillSystemGroup))]
 public partial struct GrenadeLifeTimeSystem : ISystem
 {
-    private ComponentLookup<EnemyTag> enemyLUT;
+    private ComponentLookup<Enemy> enemyLUT;
     private CollisionFilter filter;
 
     public void OnCreate(ref SystemState state)
     {
-        enemyLUT = SystemAPI.GetComponentLookup<EnemyTag>();
+        enemyLUT = SystemAPI.GetComponentLookup<Enemy>();
         filter = new CollisionFilter()
         {
             BelongsTo = ~0u,

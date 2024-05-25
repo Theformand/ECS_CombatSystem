@@ -80,7 +80,7 @@ public class Utils
             BelongsTo = 1u << 2, //Environment layer - should probably just be ~0u
             GroupIndex = 0
         };
-        float3 up = new(0f, 1f, 0f);
+        float3 up = math.up();
 
         for (int i = 0; i < transforms.Length; i++)
         {

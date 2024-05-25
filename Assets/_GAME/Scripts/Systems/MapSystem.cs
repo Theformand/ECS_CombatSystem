@@ -8,11 +8,13 @@ using UnityEngine;
 using Collider = Unity.Physics.Collider;
 using Unity.Transforms;
 using Unity.Physics.Extensions;
+using System;
 
 
 public partial class MapSystem : SystemBase
 {
     private Entity SingletonEnt;
+    private bool DRAW_DEBUG = true;
 
     protected override void OnCreate()
     {
@@ -72,16 +74,22 @@ public partial class MapSystem : SystemBase
         }
 
         ecb.Playback(EntityManager);
-        foreach (var (giz, transform) in SystemAPI.Query<GroundColliderGizmo, LocalTransform>())
+
+
+        
+        if (DRAW_DEBUG)
         {
-            var m = giz.Collider.Value.Value.ToMesh();
-            var verts = m.vertices;
-            float3 normal = m.normals[0];
-            Debug.DrawLine(transform.Position, transform.Position + normal);
-            Vector3 offset = transform.Position;
-            for (int i = 0; i < verts.Length - 1; i++)
+            foreach (var (giz, transform) in SystemAPI.Query<GroundColliderGizmo, LocalTransform>())
             {
-                Debug.DrawLine(verts[i] + offset, verts[i + 1] + offset, Color.green);
+                var m = giz.Collider.Value.Value.ToMesh();
+                var verts = m.vertices;
+                float3 normal = m.normals[0];
+                Debug.DrawLine(transform.Position, transform.Position + normal);
+                Vector3 offset = transform.Position;
+                for (int i = 0; i < verts.Length - 1; i++)
+                {
+                    Debug.DrawLine(verts[i] + offset, verts[i + 1] + offset, Color.green);
+                }
             }
         }
     }
@@ -136,7 +144,8 @@ public struct MapCell
     public MapCellType Type;
 }
 
-public enum MapCellType
+[Flags]
+public enum MapCellType : byte
 {
     Hole,
     Ground,

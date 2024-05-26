@@ -32,23 +32,26 @@ public partial struct KnockbackSystem : ISystem
     [BurstCompile]
     public void OnUpdate(ref SystemState state)
     {
-        //var curveLib = SystemAPI.GetSingleton<CurveLib>();
-        //var dt = SystemAPI.Time.DeltaTime;
-        //foreach (var (k, toggle, transform) in SystemAPI.Query<RefRW<KnockBack>, EnabledRefRW<KnockBack>, RefRW<LocalTransform>>())
-        //{
-        //    ref readonly var knock = ref k.ValueRO;
-        //    ref var knockW = ref k.ValueRW;
+        var curveLib = SystemAPI.GetSingleton<CurveLib>();
+        var dt = SystemAPI.Time.DeltaTime;
+        foreach (var (k, toggle, transform) in SystemAPI.Query<RefRW<KnockBack>, EnabledRefRW<KnockBack>, RefRW<LocalTransform>>())
+        {
+            ref readonly var knock = ref k.ValueRO;
+            ref var knockW = ref k.ValueRW;
+            var t = math.clamp(knock.T, 0f, 1f);
+            float power = curveLib.KnockbackCurve.Evaluate(t);
+            float dist = (dt * knock.Settings.Distance) / knock.Settings.Duration;
+            float3 move = knock.Settings.dir * power * dist;
+            transform.ValueRW.Position += move;
 
-        //    float power = curveLib.KnockbackCurve.Evaluate(knock.T);
-        //    float dist = (dt * knock.Settings.Distance) / knock.Settings.Duration;
-        //    float3 move = knock.Settings.dir * power * dist;
-        //    transform.ValueRW.Position += move;
+            knockW.T += dt / knock.Settings.Duration;
 
-        //    knockW.T += dt / knock.Settings.Duration;
-
-        //    // is knockback done?
-        //    if (knock.T >= 1f)
-        //        toggle.ValueRW = false;
-        //}
+            // is knockback done?
+            if (knock.T >= 1f)
+            {
+                knockW.T = 0f;
+                toggle.ValueRW = false;
+            }
+        }
     }
 }

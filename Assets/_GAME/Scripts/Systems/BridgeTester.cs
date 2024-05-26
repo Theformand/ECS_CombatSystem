@@ -3,8 +3,7 @@ using UnityEngine;
 
 public class BridgeTester : MonoBehaviour
 {
-    public MeshCollider collider;
-    public MeshFilter filter;
+    public new MeshCollider collider;
     private IEnumerator Start()
     {
         yield return new WaitForSeconds(.1f);

@@ -68,7 +68,7 @@ public partial struct MiningSystem : ISystem
                 {
                     //Death VFX
                     //Spawn any loot here
-                    ecb.DestroyEntity(ent);
+                    ecb.AddComponent(ent, new DestroyEntityTag { });
                 }
                 else
                 {

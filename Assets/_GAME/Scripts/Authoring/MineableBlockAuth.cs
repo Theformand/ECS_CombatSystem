@@ -15,12 +15,14 @@ public class MineableBlockAuth : MonoBehaviour
             var rng = new Unity.Mathematics.Random();
             rng.InitState();
             var ent = GetEntity(TransformUsageFlags.Dynamic);
+            var child = GetEntity(authoring.GFXContainer, TransformUsageFlags.NonUniformScale | TransformUsageFlags.Dynamic);
             AddComponent(ent, new MineableBlock
             {
                 Health = authoring.Health,
                 MaxHealth = authoring.Health,
-                GFXContainer = GetEntity(authoring.GFXContainer, TransformUsageFlags.NonUniformScale | TransformUsageFlags.Dynamic )
+                GFXContainer = child
             });
+           
         }
     }
 }

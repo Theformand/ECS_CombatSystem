@@ -6,4 +6,9 @@ public class ToEntities
     {
         World.DefaultGameObjectInjectionWorld.GetExistingSystemManaged<MapSystem>().SetMapData(data);
     }
+
+    public static void EquipWeapon(WeaponSkillData skillData)
+    {
+        World.DefaultGameObjectInjectionWorld.GetExistingSystemManaged<WeaponSpawnSystem>().EquipWeapon(skillData);
+    }
 }

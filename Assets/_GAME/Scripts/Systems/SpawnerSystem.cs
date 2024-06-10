@@ -4,6 +4,8 @@ using Unity.Collections;
 using Unity.Entities;
 using Unity.Mathematics;
 using Unity.Transforms;
+using UnityEngine;
+using Random = Unity.Mathematics.Random;
 
 public struct SpawnerData : IComponentData
 {
@@ -17,9 +19,36 @@ public struct SpawnerData : IComponentData
     public SpawnPlacementMode PlacementMode { get; internal set; }
 }
 
+public partial class WeaponSpawnSystem : SystemBase
+{
+    protected override void OnCreate()
+    {
+        base.OnCreate();
+        RequireForUpdate<WeaponLib>();
+    }
+
+    public void EquipWeapon(WeaponSkillData weaponSkillData)
+    {
+        var lib = SystemAPI.GetSingleton<WeaponLib>();
+        var buf = SystemAPI.GetSingletonBuffer<EntityLookupData>();
+        var prefab = lib.GetWeaponPrefab(buf,Animator.StringToHash(weaponSkillData.Guid));
+        EntityManager.Instantiate(prefab);
+    }
+
+    protected override void OnUpdate()
+    {
+
+    }
+}
+
+
+
 public partial struct SpawnerSystem : ISystem
 {
-    private int numSpawns;
+    public void OnCreate(ref SystemState state)
+    {
+        state.RequireForUpdate<WeaponLib>();
+    }
 
     public void OnDestroy(ref SystemState state) { }
 
@@ -33,8 +62,6 @@ public partial struct SpawnerSystem : ISystem
             BaseSeed = System.DateTime.Now.Millisecond,
             buffer = buffer,
         }.ScheduleParallel(state.Dependency);
-
-        numSpawns++;
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -62,7 +89,7 @@ public partial struct SpawnerSystem : ISystem
                     float radius = 30f * data.SparsityScalar;
                     pos = new float3(rng.NextFloat(-1f, 1f), rng.NextFloat(-1f, 1f), rng.NextFloat(-1f, 1f)) * rng.NextFloat(0f, radius);
                 }
-                
+
                 pos.y = data.YOffset;
                 var ent = buffer.Instantiate(entIdx, data.Prefab);
                 var rot = quaternion.identity;

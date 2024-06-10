@@ -27,7 +27,7 @@ public class CurveLibAuth : MonoBehaviour
         }
 
         public DotsCurve BakeCurve(CurveAuthWrapper curveAuth)
-        {
+        { 
             using var builder = new BlobBuilder(Allocator.Temp);
             ref var sampledCurve = ref builder.ConstructRoot<DiscretizedCurve>();
             var sampledCurveArray = builder.Allocate(ref sampledCurve.Points, curveAuth.NumSamples);

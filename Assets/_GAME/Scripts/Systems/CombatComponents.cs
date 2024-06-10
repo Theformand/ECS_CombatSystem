@@ -127,6 +127,13 @@ public struct BulletSkillData : IComponentData
     [HideInInspector]
     public int DamageCurrent;
     public float TimeStampNextShot;
+    public SkillAudioSettings AudioSettings;
+}
+
+public struct SkillAudioSettings
+{
+    public int AudioShoot;
+    public int AudioReload;
 }
 
 [Serializable]
@@ -280,7 +287,7 @@ public enum DamageType
     ACID,
 }
 
-public struct SpawnVFXRequest : IComponentData
+public struct SpawnVFXCommand : IComponentData
 {
     public VFXPrefabType VFXPrefabType;
     public float3 Pos;

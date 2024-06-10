@@ -39,7 +39,7 @@ public class Utils
     public static void SpawnVFX(VFXPrefabType vFXPrefabType, ref float3 position, ref quaternion rotation, float scale, ref EntityCommandBuffer ecb)
     {
         var marker = ecb.CreateEntity();
-        ecb.AddComponent(marker, new SpawnVFXRequest
+        ecb.AddComponent(marker, new SpawnVFXCommand
         {
             Pos = position,
             Rotation = rotation,

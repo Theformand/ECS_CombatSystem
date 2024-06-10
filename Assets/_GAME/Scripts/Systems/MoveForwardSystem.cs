@@ -6,6 +6,12 @@ using Unity.Physics.Systems;
 using Unity.Collections;
 using Unity.Mathematics;
 
+[System.Serializable]
+public struct FireConfig
+{
+    public float AngleOffset;
+}
+
 partial struct MoveForwardSystem : ISystem
 {
     [BurstCompile]
@@ -27,24 +33,6 @@ partial struct MoveForwardSystem : ISystem
     public void OnDestroy(ref SystemState state)
     {
 
-    }
-}
-
-public partial struct DestroyEntitySystem : ISystem
-{
-    public void OnCreate(ref SystemState state) { }
-    public void OnDestroy(ref SystemState state) { }
-
-    [BurstCompile]
-    public void OnUpdate(ref SystemState state)
-    {
-        var ecb = new EntityCommandBuffer(Allocator.Temp);
-
-        foreach (var (_, entity) in SystemAPI.Query<DestroyEntityTag>().WithEntityAccess())
-        {
-            ecb.DestroyEntity(entity);
-        }
-        ecb.Playback(state.EntityManager);
     }
 }
 

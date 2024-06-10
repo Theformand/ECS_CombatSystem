@@ -1,9 +1,10 @@
-﻿using Unity.Entities;
+﻿using Unity.Collections;
+using Unity.Entities;
 using Unity.Transforms;
 using UnityEngine;
 using UnityEngine.VFX;
 
-public struct VFXLibrary : IComponentData {}
+public struct VFXLibrary : IComponentData { }
 
 public struct VFXGeneric : IComponentData
 {
@@ -25,11 +26,13 @@ public partial struct VFXGenericSystem : ISystem
     public void OnUpdate(ref SystemState state)
     {
         var vfxLib = SystemAPI.GetSingletonEntity<VFXLibrary>();
-        var ecb = new EntityCommandBuffer(Unity.Collections.Allocator.Temp);
+        var ecb = new EntityCommandBuffer(Allocator.Temp);
         var buffer = SystemAPI.GetBuffer<VFXLibBufferElement>(vfxLib);
 
+
+
         //Spawn requested VFX. They cannot be spawned from other systems that are bursted
-        foreach (var (request, entity) in SystemAPI.Query<SpawnVFXRequest>().WithEntityAccess())
+        foreach (var (request, entity) in SystemAPI.Query<SpawnVFXCommand>().WithEntityAccess())
         {
             var prefab = GetVFX(request.VFXPrefabType, buffer);
             var vfx = ecb.Instantiate(prefab);
@@ -42,7 +45,7 @@ public partial struct VFXGenericSystem : ISystem
             if (vfx.ValueRO.ShouldPlay)
             {
                 vfx.ValueRO.Asset.Value.Play();
-                vfx.ValueRW.ShouldPlay = false;
+                vfx.ValueRW.ShouldPlay = false; 
             }
         }
 

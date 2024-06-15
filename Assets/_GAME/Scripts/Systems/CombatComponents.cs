@@ -1,6 +1,7 @@
 ﻿using System;
 using Unity.Entities;
 using Unity.Mathematics;
+using Unity.Physics.Systems;
 using Unity.Transforms;
 using UnityEngine;
 
@@ -109,6 +110,11 @@ public struct SkillActivationData : IComponentData
     public float ActivationRangeSqr;
     public bool RequireLOS;
     public SkillTargetingMode TargetingMode;
+}
+
+public struct Projectile : IComponentData
+{
+    public float3 Heading;
 }
 
 [Serializable]
@@ -309,7 +315,6 @@ public enum GrenadeExplosionType
     BulletBloom,
 }
 
-[UpdateInGroup(typeof(SimulationSystemGroup))]
-//[UpdateAfter(typeof(FixedStepSimulationSystemGroup))]
-[UpdateBefore(typeof(TransformSystemGroup))]
+[UpdateInGroup(typeof(FixedStepSimulationSystemGroup))]
+[UpdateBefore(typeof(PhysicsSystemGroup))]
 public partial class SkillSystemGroup : ComponentSystemGroup { }

@@ -56,8 +56,17 @@ public class Utils
         var pos = args.Origin;
         var rot = quaternion.LookRotationSafe(args.Direction, new float3(0, 1, 0));
         ecb.SetComponent(bullet, LocalTransform.FromPositionRotation(pos, rot));
+        ecb.SetComponent(bullet, new Projectile
+        {
+            Heading = args.Direction * args.MoveSpeed
+        });
         ecb.AddComponent(bullet, new DamageData() { Damage = args.Damage, DamageType = args.DamageType });
-        ecb.AddComponent(bullet, new SkillMoveSpeed { Speed = args.MoveSpeed });
+        //ecb.AddComponent(bullet, new SkillMoveSpeed { Speed = args.MoveSpeed });
+        ecb.SetComponent(bullet, new PhysicsVelocity
+        {
+            Linear = args.Direction * args.MoveSpeed
+        });
+
         if (args.Pierce != 0)
             ecb.AddComponent(bullet, new DestroyAfterPierce() { PierceCurrent = args.Pierce });
 

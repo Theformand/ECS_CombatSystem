@@ -1,4 +1,5 @@
 ﻿using Unity.Entities;
+using Unity.Mathematics;
 
 public class ToEntities
 {
@@ -10,5 +11,14 @@ public class ToEntities
     public static void EquipWeapon(WeaponSkillData skillData)
     {
         World.DefaultGameObjectInjectionWorld.GetExistingSystemManaged<WeaponSpawnSystem>().EquipWeapon(skillData);
+    }
+}
+
+
+public class ToGameObjects
+{
+    public static void PlaySoundAtPosition(int hash, float3 position)
+    {
+        
     }
 }

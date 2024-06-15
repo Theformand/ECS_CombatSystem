@@ -133,7 +133,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e579c831d972f9445a43f9461e7228c4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  MoveSpeed: 1.66
+  MoveSpeed: 0.1
   TurnSpeed: 2.08
   AttackRange: 1
   AttackInterval: 0.5

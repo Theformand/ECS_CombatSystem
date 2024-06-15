@@ -1,4 +1,4 @@
-﻿using Unity.Collections;
+using Unity.Collections;
 using Unity.Entities;
 using Unity.Transforms;
 using UnityEngine;
@@ -28,8 +28,6 @@ public partial struct VFXGenericSystem : ISystem
         var vfxLib = SystemAPI.GetSingletonEntity<VFXLibrary>();
         var ecb = new EntityCommandBuffer(Allocator.Temp);
         var buffer = SystemAPI.GetBuffer<VFXLibBufferElement>(vfxLib);
-
-
 
         //Spawn requested VFX. They cannot be spawned from other systems that are bursted
         foreach (var (request, entity) in SystemAPI.Query<SpawnVFXCommand>().WithEntityAccess())

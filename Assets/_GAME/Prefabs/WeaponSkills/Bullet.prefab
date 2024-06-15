@@ -12,6 +12,8 @@ GameObject:
   - component: {fileID: 6057216331056472059}
   - component: {fileID: 731553448836695631}
   - component: {fileID: 4861771814005833021}
+  - component: {fileID: -5803819428813235050}
+  - component: {fileID: -8449995784070109865}
   m_Layer: 0
   m_Name: Bullet
   m_TagString: Untagged
@@ -102,7 +104,7 @@ MonoBehaviour:
     m_Template: {fileID: 0}
     m_CollisionResponse:
       m_Override: 0
-      m_Value: 0
+      m_Value: 1
     m_Friction:
       m_Override: 0
       m_Value:
@@ -159,7 +161,7 @@ MonoBehaviour:
         Category05: 0
         Category06: 0
         Category07: 0
-        Category08: 0
+        Category08: 1
         Category09: 0
         Category10: 0
         Category11: 0
@@ -208,7 +210,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ccea9ea98e38942e0b0938c27ed1903e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_MotionType: 1
+  m_MotionType: 0
   m_Smoothing: 0
   m_Mass: 1
   m_LinearDamping: 0.01
@@ -221,7 +223,7 @@ MonoBehaviour:
     x: 0
     y: 0
     z: 0
-  m_GravityFactor: 1
+  m_GravityFactor: 0
   m_OverrideDefaultMassDistribution: 0
   m_CenterOfMass:
     x: 0
@@ -247,6 +249,30 @@ MonoBehaviour:
     Tag05: 0
     Tag06: 0
     Tag07: 0
+--- !u!114 &-5803819428813235050
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 366544697466820576}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: abf3e9aa33b09e44e901fe6b61f5b9ef, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &-8449995784070109865
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 366544697466820576}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9c5c06b05f3626f49bcfc1c551ad2050, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &9022438229776527315
 GameObject:
   m_ObjectHideFlags: 0
@@ -275,7 +301,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.0129138455, y: 0.02980355, z: 0.563885}
+  m_LocalScale: {x: 0.021461654, y: 0.055257697, z: 0.6625406}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 4759106848455901137}

@@ -67,8 +67,6 @@ public partial struct BeamSkillSystem : ISystem
 
                 if (beamData.TimeStampNextTick < time)
                 {
-                  
-
                     var raycastInput = new RaycastInput()
                     {
                         Start = start,

@@ -1,4 +1,4 @@
-﻿using Unity.Burst;
+using Unity.Burst;
 using Unity.Collections;
 using Unity.Entities;
 using Unity.Mathematics;
@@ -6,6 +6,8 @@ using Unity.Physics;
 using Unity.Transforms;
 using static Utils;
 using Random = Unity.Mathematics.Random;
+
+
 
 [UpdateInGroup(typeof(SkillSystemGroup))]
 public partial struct ProjectileSkillSystem : ISystem
@@ -35,12 +37,10 @@ public partial struct ProjectileSkillSystem : ISystem
 
         var playerFwd = playerTransform.Forward();
         float3 playerPos = playerTransform.Position;
-      
         var time = (float)SystemAPI.Time.ElapsedTime;
-        var dt = SystemAPI.Time.DeltaTime;
         NativeArray<LocalTransform> allTransforms = entityQuery.ToComponentDataArray<LocalTransform>(Allocator.Temp);
         NativeArray<Enemy> allEnemies = entityQuery.ToComponentDataArray<Enemy>(Allocator.Temp);
-
+                
         foreach (var (qSkilldata, qRl, activationData) in SystemAPI.Query<RefRW<BulletSkillData>, RefRW<SkillReloadData>, SkillActivationData>())
         {
             ref readonly var skillData = ref qSkilldata.ValueRO;
@@ -85,7 +85,8 @@ public partial struct ProjectileSkillSystem : ISystem
                     if (curr > highestMax)
                         highestMax = curr;
                 }
-
+                
+                               
                 for (int i = 0; i < allEnemies.Length; i++)
                 {
                     if (allEnemies[i].HPMax == highestMax)
@@ -113,6 +114,7 @@ public partial struct ProjectileSkillSystem : ISystem
                 };
                 NativeList<DistanceHit> hitList = new(Allocator.Temp);
                 physicsWorld.OverlapSphere(playerPos, activationData.ActivationRange, ref hitList, filter);
+                
                 if (hitList.Length == 0)
                     continue;
 

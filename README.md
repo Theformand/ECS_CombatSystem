@@ -17,6 +17,7 @@ POC's:
 * Bridge to / from GameObjects world
 * Generic VFX system that spawns and plays VFX Graph assets
 * Generic spawning system
+* Generate custom mesh in Monobehaviour -> send to ECS and create collider from it
 
 
 https://github.com/Theformand/ECS_CombatSystem/assets/9436242/3a7b95e3-c272-47fb-b6d0-b8799615cbec

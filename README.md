@@ -10,6 +10,8 @@ POC's:
 * GrenadeSystem (with Cluster grenades)
 * Rockets
 * Ricochet'ing bullets (Demonstrating collision callbacks)
+* Knockback
+* Convert AnimationCurve to ECS data
 * XP pickups (with jobified magnet)
 * ScriptableObject -> IComponentData workflow
 * Bridge to / from GameObjects world

@@ -5,6 +5,8 @@ A "mess-around" project to learn some ECS.
 Has proof-of-concept systems for a Survivor-like type game.
 Very unorganized, multiple systems and components in 1 file, so dont browse on Github, download the project and browse in your IDE.
 
+YOU CAN USE THIS CODE FOR WHATEVER YOU WANT, BUT THERE WILL BE NO Q&A AND NO PULL REQUESTS. Fork at your leisure
+
 POC's:
 * ProjectileSkillSystem (has prefabs for shotguns, miniguns, assault rifles)
 * GrenadeSystem (with Cluster grenades)

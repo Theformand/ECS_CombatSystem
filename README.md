@@ -1,3 +1,6 @@
+
+
+
 A "mess-around" project to learn some ECS. 
 Has proof-of-concept systems for a Survivor-like type game.
 Very unorganized, multiple systems and components in 1 file, so dont browse on Github, download the project and browse in your IDE.
@@ -12,3 +15,7 @@ POC's:
 * Bridge to / from GameObjects world
 * Generic VFX system that spawns and plays VFX Graph assets
 * Generic spawning system
+
+
+https://github.com/Theformand/ECS_CombatSystem/assets/9436242/3a7b95e3-c272-47fb-b6d0-b8799615cbec
+

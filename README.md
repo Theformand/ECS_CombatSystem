@@ -9,6 +9,7 @@ YOU CAN USE THIS CODE FOR WHATEVER YOU WANT, BUT THERE WILL BE NO Q&A AND NO PUL
 
 POC's:
 * ProjectileSkillSystem (has prefabs for shotguns, miniguns, assault rifles)
+* Different targeting modes : Closest enemy, Highest HP enemy, with and without Line of Sight, Player forward / backward
 * GrenadeSystem (with Cluster grenades)
 * Rockets
 * Ricochet'ing bullets (Demonstrating collision callbacks)

@@ -58,7 +58,8 @@ public class Utils
         ecb.SetComponent(bullet, LocalTransform.FromPositionRotation(pos, rot));
         ecb.SetComponent(bullet, new Projectile
         {
-            Heading = args.Direction * args.MoveSpeed
+            Heading = args.Direction,
+            Speed = args.MoveSpeed
         });
         ecb.AddComponent(bullet, new DamageData() { Damage = args.Damage, DamageType = args.DamageType });
         //ecb.AddComponent(bullet, new SkillMoveSpeed { Speed = args.MoveSpeed });

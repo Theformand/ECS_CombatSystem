@@ -115,6 +115,7 @@ public struct SkillActivationData : IComponentData
 public struct Projectile : IComponentData
 {
     public float3 Heading;
+    public float Speed;
 }
 
 [Serializable]

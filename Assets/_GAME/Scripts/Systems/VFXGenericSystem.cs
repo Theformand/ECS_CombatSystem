@@ -1,5 +1,6 @@
 using Unity.Collections;
 using Unity.Entities;
+using Unity.Mathematics;
 using Unity.Transforms;
 using UnityEngine;
 using UnityEngine.VFX;
@@ -10,6 +11,58 @@ public struct VFXGeneric : IComponentData
 {
     public UnityObjectRef<VisualEffect> Asset;
     public bool ShouldPlay;
+}
+
+public struct VFXPropertySetter : IComponentData
+{
+    public float RadiusProperty;
+}
+
+
+public partial struct SpawnVFXSystem: ISystem
+{
+    public void OnCreate(ref SystemState state) { }
+    public void OnDestroy(ref SystemState state) { }
+
+    public void OnUpdate(ref SystemState state)
+    {
+        var ecb = SystemAPI.GetSingleton<EndSimulationEntityCommandBufferSystem.Singleton>().CreateCommandBuffer(state.WorldUnmanaged);
+
+        for (int i = 0; i < 2; i++)
+        {
+            var e = ecb.CreateEntity();
+            ecb.AddComponent(e, new SpawnVFXCommand
+            {
+                Pos = new float3(0f, 0f, i),
+                Rotation = quaternion.identity,
+                Scale = 1f,
+                VFXPrefabType = VFXPrefabType.Grenade_Explosion_HE
+            });
+        }
+        state.Enabled = false;
+    }
+}
+
+public partial struct VFXPropertiesSystem: ISystem
+{
+    private static int ID_RADIUS = Shader.PropertyToID("Radius");
+
+    public void OnCreate(ref SystemState state) { }
+    public void OnDestroy(ref SystemState state) { }
+
+    public void OnUpdate(ref SystemState state)
+    {
+        int count = 0;
+        var time = (float)SystemAPI.Time.ElapsedTime;
+        foreach (var vfx in SystemAPI.Query<RefRW<VFXGeneric>>())
+        {
+            float radius = math.sin(time + count) * 0.5f + 0.5f;
+            radius *= 5f;
+            vfx.ValueRW.Asset.Value.SetFloat(ID_RADIUS,radius);
+            count++;
+        }
+
+    }
 }
 
 public partial struct VFXGenericSystem : ISystem
@@ -49,6 +102,7 @@ public partial struct VFXGenericSystem : ISystem
 
         ecb.Playback(state.EntityManager);
     }
+
 
     private Entity GetVFX(VFXPrefabType vFXPrefabType, DynamicBuffer<VFXLibBufferElement> buf)
     {

@@ -25,7 +25,7 @@ MonoBehaviour:
   RequireLOS: 1
   TargetingMode: 0
   NumBulletsPerAttack: 1
-  AttacksPerSecond: 10
+  AttacksPerSecond: 15.2
   AngleSpread: 0
   AccuracySpread: 5
   BulletMoveSpeed: 45
@@ -33,4 +33,3 @@ MonoBehaviour:
   Pierce: 10
   Lifetime: 0.5
   DamageType: 0
-  TimeStampNextShot: 0

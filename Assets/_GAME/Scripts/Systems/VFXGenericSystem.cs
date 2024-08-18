@@ -54,11 +54,11 @@ public partial struct VFXPropertiesSystem: ISystem
     {
         int count = 0;
         var time = (float)SystemAPI.Time.ElapsedTime;
-        foreach (var vfx in SystemAPI.Query<RefRW<VFXGeneric>>())
+        foreach (var (vfx ,asset ) in SystemAPI.Query<RefRW<VFXGeneric>, SystemAPI.ManagedAPI.UnityEngineComponent<VisualEffect>>())
         {
             float radius = math.sin(time + count) * 0.5f + 0.5f;
             radius *= 5f;
-            vfx.ValueRW.Asset.Value.SetFloat(ID_RADIUS,radius);
+            asset.Value.SetFloat(ID_RADIUS,radius);
             count++;
         }
 
